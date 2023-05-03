@@ -19,11 +19,14 @@ fenetre = tk.Tk()
 fenetre.geometry('400x400')
 fenetre.title('Calendrier')
 
+#création d'une icon pour le button calendrier
+icon_button_calendrier = tk.PhotoImage(file="C:\\Users\\alber\\Pictures\\Images Project python\\VraiCalendar.PNG")
+
 # création des boutons pour ajouter des événements, trier les événements et afficher le calendrier
 
-calendrier_button = ttk.Button(fenetre, text='Afficher le calendrier', command=afficher_calendrier)
-calendrier_button.pack(pady=10)
+calendrier_button = ttk.Button(fenetre, text='Afficher le calendrier', command=afficher_calendrier, image= icon_button_calendrier  , padding=(2))
+calendrier_button.pack(side="top", pady=0 , anchor="nw")
+
 
 # lancement de la boucle principale
 fenetre.mainloop()
-
