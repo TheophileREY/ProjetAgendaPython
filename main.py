@@ -19,7 +19,7 @@ fenetre = tk.Tk()
 fenetre.geometry('400x400')
 fenetre.title('Calendrier')
 
-#création d'une icon pour le button calendrier(mettre le chemin vers le dossier contenant l'image)
+#création d'une icon pour le button calendrier(mettre le chemin vers le dossier contenant l'image dispo sur github)
 icon_button_calendrier = tk.PhotoImage(file="C:\\Users\\alber\\Pictures\\Images Project python\\VraiCalendar.PNG")
 
 # création des boutons pour ajouter des événements, trier les événements et afficher le calendrier
