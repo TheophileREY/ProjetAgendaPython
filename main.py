@@ -1,8 +1,9 @@
 import tkinter as tk
-from tkinter import ttk
-from tkcalendar import Calendar, DateEntry
+from tkinter import *
+from tkcalendar import Calendar
 import os
 import datetime
+from agenda import Agenda
 
 
 # fonction pour obtenir le chemin d'une image (en fonction du pc et du systeme sur lequel est executer le script
@@ -47,17 +48,24 @@ def afficher_calendrier():
     chercher_date_button.pack(side="top", pady=5)
 
 
-# création de la fenêtre principale
-fenetre = tk.Tk()
-fenetre.geometry('400x400')
-fenetre.title('Calendrier')
 
-#création d'une icon pour le button calendrier(mettre le chemin vers le dossier contenant l'image dispo sur github)
-icon_button_calendrier = tk.PhotoImage(file=obtenir_chemin_image("VraiCalendar.png"))
+# Création de la fenêtre principale
+root = Tk()
+root.title("Agenda")
+root.geometry("400x400")
 
-# création des boutons pour afficher le calendrier et la recherche de date
-calendrier_button = ttk.Button(fenetre, text='Afficher le calendrier', command=afficher_calendrier, image= icon_button_calendrier, padding=(2))
-calendrier_button.pack(side="top", pady=0 , anchor="nw")
+# Création de l'agenda
+agenda = Agenda(root)
 
-# lancement de la boucle principale
-fenetre.mainloop()
+# Ajout des boutons "Mois précédent" et "Mois suivant"
+btn_mois_precedent = Button(root, text="<", command=agenda.mois_precedent)
+btn_mois_precedent.pack(side=LEFT)
+
+btn_mois_suivant = Button(root, text=">", command=agenda.mois_suivant)
+btn_mois_suivant.pack(side=RIGHT)
+
+# Affichage de l'agenda
+agenda.pack()
+
+# Lancement de la boucle principale
+root.mainloop()
