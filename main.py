@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox
 import os
 import time
 
@@ -8,8 +9,9 @@ Elle permet de gérer la création, la suppression et la modification des evenem
 Les evenements seront stockés dans un fichier txt. Un evenment fera 4 lignes avec une caracteristique par ligne 
  
 """
-class Evenement:
+class Evenement():
     def __init__(self, horaire, priorite, titre, description):
+        #self.fichier_evenements =
         self.horaire = horaire
         self.priorite = priorite
         self.titre = titre
@@ -58,6 +60,57 @@ class Evenement:
             print(evenement)
             print("=" * 30)
 
+    def ajouter_evenement():
+        fenetre_ajout = tk.Toplevel()
+        fenetre_ajout.title("Ajouter un événement")
+
+        # Fonction de sauvegarde
+        def sauvegarder_evenement():
+            horaire = entry_horaire.get()
+            priorite = entry_priorite.get()
+            titre = entry_titre.get()
+            description = entry_description.get()
+
+            # Vérifier si toutes les zones de texte sont remplies
+            if horaire and priorite and titre and description:
+                # Créer l'objet Evenement
+                evenement = Evenement(horaire, priorite, titre, description)
+
+                # Sauvegarder l'événement
+                Evenement.sauvegarder_evenement(fichier_evenements, evenement)
+
+                messagebox.showinfo("Sauvegarde", "Événement sauvegardé avec succès.")
+                fenetre_ajout.destroy()
+            else:
+                messagebox.showwarning("Erreur", "Veuillez remplir tous les champs.")
+
+        # Créer les zones de texte
+        label_horaire = tk.Label(fenetre_ajout, text="Horaire :")
+        label_horaire.pack()
+        entry_horaire = tk.Entry(fenetre_ajout)
+        entry_horaire.pack()
+
+        label_priorite = tk.Label(fenetre_ajout, text="Priorité (1, 2 ou 3) :")
+        label_priorite.pack()
+        entry_priorite = tk.Entry(fenetre_ajout)
+        entry_priorite.pack()
+
+        label_titre = tk.Label(fenetre_ajout, text="Titre :")
+        label_titre.pack()
+        entry_titre = tk.Entry(fenetre_ajout)
+        entry_titre.pack()
+
+        label_description = tk.Label(fenetre_ajout, text="Description :")
+        label_description.pack()
+        entry_description = tk.Entry(fenetre_ajout)
+        entry_description.pack()
+
+        # Bouton de sauvegarde
+        bouton_sauvegarder = tk.Button(fenetre_ajout, text="Sauvegarder", command=sauvegarder_evenement)
+        bouton_sauvegarder.pack(side=tk.RIGHT, padx=10, pady=10)
+
+        # Afficher la fenêtre
+        fenetre_ajout.mainloop()
 
 
 
@@ -186,9 +239,13 @@ class Affichage():
         self.fenetre = tk.Tk()
         self.fenetre.geometry('400x400')
         self.fenetre.title('Agenda')
-        self.icone_calendrier = tk.PhotoImage(file=obtenir_chemin_image("VraiCalendar.png"))
+        self.icone_calendrier = tk.PhotoImage(file=obtenir_chemin_image("calendrier.png"))
+        self.icone_ajouter = tk.PhotoImage(file=obtenir_chemin_image("ajouter.png"))
         # print(obtenir_chemin_image("VraiCalendar.png"))
-        tk.Button(self.fenetre, image=self.icone_calendrier, command=lambda: Calendrier(time.time())).pack(side=tk.TOP, anchor="nw")
+        bouton_calendrier = tk.Button(self.fenetre, image=self.icone_calendrier, command=lambda: Calendrier(time.time()))
+        bouton_calendrier.pack(side=tk.TOP, anchor="nw")
+        bouton_ajouter = tk.Button(self.fenetre, image=self.icone_ajouter, command=Evenement.ajouter_evenement)
+        bouton_ajouter.pack()
 
 
 def obtenir_chemin_image(nom_image):
@@ -198,17 +255,5 @@ def obtenir_chemin_image(nom_image):
     return chemin_image
 
 # Affichage
-"""
-fichier_evenements = "evenements.txt"
-evenement1 = Evenement("10:00", "1", "Réunion", "Réunion d'équipe")
-Evenement.sauvegarder_evenement(fichier_evenements, evenement1)
-evenement2 = Evenement("14:30", "2", "Présentation", "Présentation du projet")
-Evenement.sauvegarder_evenement(fichier_evenements, evenement2)
-liste_evenements = Evenement.lire_evenements(fichier_evenements)
-Evenement.afficher_evenements(liste_evenements)
-"""
 fenetre = Affichage()
 fenetre.fenetre.mainloop()
-
-
-
