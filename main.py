@@ -3,6 +3,65 @@ import os
 import time
 
 """
+Creation de la classe Evenement
+Elle permet de gérer la création, la suppression et la modification des evenements
+Les evenements seront stockés dans un fichier txt. Un evenment fera 4 lignes avec une caracteristique par ligne 
+ 
+"""
+class Evenement:
+    def __init__(self, horaire, priorite, titre, description):
+        self.horaire = horaire
+        self.priorite = priorite
+        self.titre = titre
+        self.description = description
+
+    def __str__(self):
+        return f"Horaire : {self.horaire}\nPriorité : {self.priorite}\nTitre : {self.titre}\nDescription : {self.description}"
+
+    def creer_fichier(fichier):
+        if not os.path.exists(fichier):
+            with open(fichier, "w") as f:
+                pass  # Le fichier est créé vide
+    def creer_evenement():
+        horaire = input("Entrez l'horaire de l'événement : ")
+        priorite = input("Entrez la priorité de l'événement (1, 2 ou 3) : ")
+        titre = input("Entrez le titre de l'événement : ")
+        description = input("Entrez la description de l'événement : ")
+        return Evenement(horaire, priorite, titre, description)
+
+
+    def sauvegarder_evenement(fichier, evenement):
+        Evenement.creer_fichier(fichier)
+        with open(fichier, "a") as f:
+            f.write(f"{evenement.horaire}\n")
+            f.write(f"{evenement.priorite}\n")
+            f.write(f"{evenement.titre}\n")
+            f.write(f"{evenement.description}\n")
+            f.write("\n")
+
+
+    def lire_evenements(fichier):
+        Evenement.creer_fichier(fichier)
+        evenements = []
+        with open(fichier, "r") as f:
+            lignes = f.readlines()
+            for i in range(0, len(lignes), 5):
+                horaire = lignes[i].strip()
+                priorite = lignes[i + 1].strip()
+                titre = lignes[i + 2].strip()
+                description = lignes[i + 3].strip()
+                evenements.append(Evenement(horaire, priorite, titre, description))
+        return evenements
+
+    def afficher_evenements(evenements):
+        for evenement in evenements:
+            print(evenement)
+            print("=" * 30)
+
+
+
+
+"""
 Creation de la classe Calendrier
 Elle permet de creer tout le système du calendrier. 
 Chaque jour est un bouton et lorsqu'on clique dessus, il renvoie la date permettant de l'utiliser ensuite.
@@ -39,6 +98,7 @@ class Calendrier():
 
         self.affichage_calendrier(round(startTime))
 
+
     def affichage_calendrier(self, startTime):
         # Trouver le premier jour du mois actuel
         num_jour = int(time.strftime("%d", time.localtime(startTime)))
@@ -73,12 +133,14 @@ class Calendrier():
             tk.Label(_t, text=i).grid(column=1, row=1)
         #
         # Fonction permettant d'afficher la date puis de detruire le calendrier.
-        # A modifier pour pouvoir l'integrer dans d'autres classes et fonction, actuellement juste un print pour le debuggage
+        # Elle renvoie la date au format %A %d %B %Y = Jour (lettre) NumeroJour (nombre) Mois (lettre) Année (nombre)
         def buttonFunction(returnTime):
             return_time = self.currentTime + (86400 * returnTime)
             print(return_time)
-            print(time.strftime("%A %d %B %Y", time.localtime(return_time)))
+            print(time.strftime("%A %d %B %Y", time.localtime(return_time)))  # On affiche la date cliquée
             self.fenetre_calendrier.destroy()
+            self.datefinale = time.strftime("%A %d %B %Y", time.localtime(return_time))
+            return self.datefinale  # On renvoie la date cliquée
 
         # Creation des boutons pour chaque jour
         row = 1
@@ -136,5 +198,17 @@ def obtenir_chemin_image(nom_image):
     return chemin_image
 
 # Affichage
+"""
+fichier_evenements = "evenements.txt"
+evenement1 = Evenement("10:00", "1", "Réunion", "Réunion d'équipe")
+Evenement.sauvegarder_evenement(fichier_evenements, evenement1)
+evenement2 = Evenement("14:30", "2", "Présentation", "Présentation du projet")
+Evenement.sauvegarder_evenement(fichier_evenements, evenement2)
+liste_evenements = Evenement.lire_evenements(fichier_evenements)
+Evenement.afficher_evenements(liste_evenements)
+"""
 fenetre = Affichage()
 fenetre.fenetre.mainloop()
+
+
+
