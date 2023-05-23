@@ -11,16 +11,17 @@ Les evenements seront stockés dans un fichier txt. Un evenment fera 4 lignes av
 """
 class Evenement():
     def __init__(self, horaire, priorite, titre, description):
-        #self.fichier_evenements =
+        self.fichier_evenements = "fichier_evenements.txt"  # Nom du fichier
         self.horaire = horaire
         self.priorite = priorite
         self.titre = titre
         self.description = description
+        self.creer_fichier(self.fichier_evenements)  # Création du fichier si nécessaire
 
     def __str__(self):
         return f"Horaire : {self.horaire}\nPriorité : {self.priorite}\nTitre : {self.titre}\nDescription : {self.description}"
 
-    def creer_fichier(fichier):
+    def creer_fichier(self, fichier):
         if not os.path.exists(fichier):
             with open(fichier, "w") as f:
                 pass  # Le fichier est créé vide
@@ -31,21 +32,18 @@ class Evenement():
         description = input("Entrez la description de l'événement : ")
         return Evenement(horaire, priorite, titre, description)
 
-
-    def sauvegarder_evenement(fichier, evenement):
-        Evenement.creer_fichier(fichier)
-        with open(fichier, "a") as f:
-            f.write(f"{evenement.horaire}\n")
-            f.write(f"{evenement.priorite}\n")
-            f.write(f"{evenement.titre}\n")
-            f.write(f"{evenement.description}\n")
+    def sauvegarder_evenement(self):
+        with open(self.fichier_evenements, "a") as f:
+            f.write(f"{self.horaire}\n")
+            f.write(f"{self.priorite}\n")
+            f.write(f"{self.titre}\n")
+            f.write(f"{self.description}\n")
             f.write("\n")
 
-
-    def lire_evenements(fichier):
-        Evenement.creer_fichier(fichier)
+    def lire_evenements(self):
+        self.creer_fichier(self.fichier_evenements)
         evenements = []
-        with open(fichier, "r") as f:
+        with open(self.fichier_evenements, "r") as f:
             lignes = f.readlines()
             for i in range(0, len(lignes), 5):
                 horaire = lignes[i].strip()
@@ -77,7 +75,7 @@ class Evenement():
                 evenement = Evenement(horaire, priorite, titre, description)
 
                 # Sauvegarder l'événement
-                Evenement.sauvegarder_evenement(fichier_evenements, evenement)
+                evenement.sauvegarder_evenement()
 
                 messagebox.showinfo("Sauvegarde", "Événement sauvegardé avec succès.")
                 fenetre_ajout.destroy()
