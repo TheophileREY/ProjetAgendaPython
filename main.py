@@ -25,14 +25,14 @@ class Evenement():
         if not os.path.exists(fichier):
             with open(fichier, "w") as f:
                 pass  # Le fichier est créé vide
-    def creer_evenement():
+    def creer_evenement(): #fonction permettant de creer les évenements en fonction des données de l'utilisateur
         horaire = input("Entrez l'horaire de l'événement : ")
         priorite = input("Entrez la priorité de l'événement (1, 2 ou 3) : ")
         titre = input("Entrez le titre de l'événement : ")
         description = input("Entrez la description de l'événement : ")
         return Evenement(horaire, priorite, titre, description)
 
-    def sauvegarder_evenement(self):
+    def sauvegarder_evenement(self): #fonction permettant de sauvegarder les évenements dans le fichier texte
         with open(self.fichier_evenements, "a") as f:
             f.write(f"{self.horaire}\n")
             f.write(f"{self.priorite}\n")
@@ -40,9 +40,9 @@ class Evenement():
             f.write(f"{self.description}\n")
             f.write("\n")
 
-    def lire_evenements(self):
+    def lire_evenements(self):      #fonction permettant de retrouver des évenements dans le fichier texte
         self.creer_fichier(self.fichier_evenements)
-        evenements = []
+        evenements = [] #liste d'évenements vides
         with open(self.fichier_evenements, "r") as f:
             lignes = f.readlines()
             for i in range(0, len(lignes), 5):
@@ -50,20 +50,21 @@ class Evenement():
                 priorite = lignes[i + 1].strip()
                 titre = lignes[i + 2].strip()
                 description = lignes[i + 3].strip()
-                evenements.append(Evenement(horaire, priorite, titre, description))
+                evenements.append(Evenement(horaire, priorite, titre, description)) #ajoute les évenements listé apparavant a la liste évenements
         return evenements
 
-    def afficher_evenements(evenements):
+    def afficher_evenements(evenements):  #fonction permettant de séparer les évenements par des === dans le fichier texte
         for evenement in evenements:
             print(evenement)
             print("=" * 30)
 
+    # créatioon de la fenetre permettant d'ajouter une évenement
     def ajouter_evenement():
         fenetre_ajout = tk.Toplevel()
         fenetre_ajout.title("Ajouter un événement")
 
         # Fonction de sauvegarde
-        def sauvegarder_evenement():
+        def sauvegarder_evenement(): #fonction appelée quand on appui sur save
             horaire = entry_horaire.get()
             priorite = entry_priorite.get()
             titre = entry_titre.get()
