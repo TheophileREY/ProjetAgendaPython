@@ -2,13 +2,42 @@ import tkinter as tk
 from tkinter import messagebox
 import os
 import time
+import openweather
+import requests
 
 """
-Creation de la classe Evenement
-Elle permet de gérer la création, la suppression et la modification des evenements
-Les evenements seront stockés dans un fichier txt. Un evenment fera 4 lignes avec une caracteristique par ligne 
- 
+Creation de la classe meteo
+Elle permet de gérer toutes les données que l'on veut récupérer comme la météo, ...
+
 """
+class Meteo:
+    def __init__(self, api_key):
+        self.api_key = api_key
+
+    def get_weather_forecast(self, city, days):
+        current_time = int(time.time())
+        forecast_url = f"http://api.openweathermap.org/data/2.5/forecast/daily?q={city}&cnt={days}&appid={self.api_key}&dt={current_time}"
+        response = requests.get(forecast_url)
+        forecast_data = response.json()
+
+        weather_forecast = []
+
+        for day_data in forecast_data["list"]:
+            date = time.strftime("%Y-%m-%d", time.localtime(day_data["dt"]))
+            temperature = day_data["temp"]["day"]
+            weather = day_data["weather"][0]["main"]
+
+            weather_forecast.append({"date": date, "temperature": temperature, "weather": weather})
+
+        return weather_forecast
+
+
+    """
+    Creation de la classe Evenement
+    Elle permet de gérer la création, la suppression et la modification des evenements
+    Les evenements seront stockés dans un fichier txt. Un evenment fera 4 lignes avec une caracteristique par ligne
+
+    """
 class Evenement():
     def __init__(self, horaire, priorite, titre, description):
         self.fichier_evenements = "fichier_evenements.txt"  # Nom du fichier
@@ -152,80 +181,79 @@ class Calendrier():
 
 
     def affichage_calendrier(self, startTime):
-        # Trouver le premier jour du mois actuel
-        num_jour = int(time.strftime("%d", time.localtime(startTime)))
+        num_jour = int(time.strftime("%d", time.localtime(startTime))) # Obtention du numéro du jour du mois actuel
         # il y a 86400sec dans 1 jour
-        self.currentTime = startTime - (num_jour * 86400) + 86400
-        print(time.strftime("%d %B %A", time.localtime(self.currentTime)))
+        self.currentTime = startTime - (num_jour * 86400) + 86400 # Calcul du temps actuel en se déplaçant au premier jour du mois
+        print(time.strftime("%d %B %A", time.localtime(self.currentTime))) # Affichage du jour, du mois et du nom du jour correspondants
 
-        self.currentMonth = time.strftime("%m", time.localtime(self.currentTime))
+        self.currentMonth = time.strftime("%m", time.localtime(self.currentTime)) # Obtention du mois actuel
         # Aucun mois ne possede moins de 27 jours, on initialise la longueur a 27
         longueur_mois = 27
         for i in range(5):
-            _t = self.currentTime + (86400 * (i + 27))
-            print(time.strftime("%B", time.localtime(_t)))
-            if time.strftime("%m", time.localtime(_t)) != self.currentMonth:
-                print(longueur_mois)
+            _t = self.currentTime + (86400 * (i + 27)) # Calcul du temps pour le jour suivant
+            print(time.strftime("%B", time.localtime(_t))) # Affichage du mois correspondant
+            if time.strftime("%m", time.localtime(_t)) != self.currentMonth: # Vérification si le mois a changé
+                print(longueur_mois) # Affichage de la longueur du mois actuel
                 break
-            longueur_mois += 1
+            longueur_mois += 1 # Incrémenter la longueur du mois
         # Detruire toutes les autres frame du calendrier qui existe.
         try:
             if (self.calendarFrame.winfo_exists() == True):
-                self.calendarFrame.destroy()
+                self.calendarFrame.destroy() # Destruction de la frame du calendrier si elle existe
         except Exception:
             print("Erreur")
 
-        self.calendarFrame = tk.LabelFrame(self.fenetre_calendrier, text=time.strftime("%B %Y", time.localtime(self.currentTime)))
-        self.calendarFrame.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+        self.calendarFrame = tk.LabelFrame(self.fenetre_calendrier, text=time.strftime("%B %Y", time.localtime(self.currentTime))) # Création d'une nouvelle frame pour le calendrier avec le mois et l'année actuels
+        self.calendarFrame.pack(side=tk.TOP, fill=tk.BOTH, expand=1) # Positionnement de la frame dans la fenêtre
 
-        # Placer les jours en tete du calendrier
+
         for index, i in enumerate(self.jour):
-            _t = tk.Frame(self.calendarFrame)
-            _t.grid(column=index + 1, row=0)
-            tk.Label(_t, text=i).grid(column=1, row=1)
+            _t = tk.Frame(self.calendarFrame) # Création d'une nouvelle frame pour chaque jour de la semaine
+            _t.grid(column=index + 1, row=0) # Positionnement de la frame dans la grille
+            tk.Label(_t, text=i).grid(column=1, row=1)  # Ajout d'une étiquette avec le nom du jour dans chaque frame
         #
         # Fonction permettant d'afficher la date puis de detruire le calendrier.
         # Elle renvoie la date au format %A %d %B %Y = Jour (lettre) NumeroJour (nombre) Mois (lettre) Année (nombre)
         def buttonFunction(returnTime):
-            return_time = self.currentTime + (86400 * returnTime)
+            return_time = self.currentTime + (86400 * returnTime) # Calcul de la date de retour en ajoutant le nombre de jours
             print(return_time)
             print(time.strftime("%A %d %B %Y", time.localtime(return_time)))  # On affiche la date cliquée
-            self.fenetre_calendrier.destroy()
-            self.datefinale = time.strftime("%A %d %B %Y", time.localtime(return_time))
+            self.fenetre_calendrier.destroy() # Fermeture de la fenêtre du calendrier
+            self.datefinale = time.strftime("%A %d %B %Y", time.localtime(return_time)) # Conversion de la date en format souhaité
             return self.datefinale  # On renvoie la date cliquée
 
         # Creation des boutons pour chaque jour
         row = 1
         for i in range(longueur_mois):
-            _d = time.localtime(self.currentTime + (86400 * i))
-            _day = time.strftime("%A", _d)
+            _d = time.localtime(self.currentTime + (86400 * i)) # Obtention de la date correspondante au jour
+            _day = time.strftime("%A", _d) # Obtention du nom du jour
 
             tk.Button(self.calendarFrame, text=(i + 1), command=lambda i=i: buttonFunction(i)).grid(
-                column=self.position_jour[_day], row=row, sticky=tk.N + tk.E + tk.W + tk.S)
+                column=self.position_jour[_day], row=row, sticky=tk.N + tk.E + tk.W + tk.S) # Création d'un bouton avec une fonction associée
             if self.position_jour[_day] == 7:
                 row += 1
 
         for i in range(7):
-            self.calendarFrame.columnconfigure(i + 1, weight=1)
+            self.calendarFrame.columnconfigure(i + 1, weight=1) # Configuration des colonnes pour qu'elles s'adaptent au contenu
         for i in range(5):
-            self.calendarFrame.rowconfigure(i + 1, weight=1)
+            self.calendarFrame.rowconfigure(i + 1, weight=1) # Configuration des lignes pour qu'elles s'adaptent au contenu
 
     # Aller au mois suivant
     def mois_suivant(self):
         for i in range(32):
-            _c = time.strftime("%m", time.localtime(self.currentTime + (86400 * i)))
-            if _c != self.currentMonth:
-                self.currentTime += 86400 * i
-                self.affichage_calendrier(self.currentTime)
+            _c = time.strftime("%m", time.localtime(self.currentTime + (86400 * i))) # Obtention du mois pour le jour suivant
+            if _c != self.currentMonth: # Vérification si le mois a changé
+                self.currentTime += 86400 * i # Mise à jour du temps actuel pour le premier jour du mois suivant
+                self.affichage_calendrier(self.currentTime) # Appel de la fonction d'affichage du calendrier avec le nouveau temps
                 break
 
     # Aller au mois precedent
     def mois_precedent(self):
         for i in range(32):
-            _c = time.strftime("%m", time.localtime(self.currentTime - (86400 * i)))
-            if _c != self.currentMonth:
-                self.currentTime -= 86400 * i
-                self.affichage_calendrier(self.currentTime)
+            _c = time.strftime("%m", time.localtime(self.currentTime - (86400 * i))) # Obtention du mois pour le jour précédent
+            if _c != self.currentMonth: # Vérification si le mois a changé
+                self.currentTime -= 86400 * i # Mise à jour du temps actuel pour le premier jour du mois précédent
+                self.affichage_calendrier(self.currentTime) # Appel de la fonction d'affichage du calendrier avec le nouveau temps
                 break
 
 
