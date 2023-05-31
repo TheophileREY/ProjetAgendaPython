@@ -239,12 +239,27 @@ class Affichage():
         self.fenetre.title('Agenda')
         self.icone_calendrier = tk.PhotoImage(file=obtenir_chemin_image("calendrier.png"))
         self.icone_ajouter = tk.PhotoImage(file=obtenir_chemin_image("ajouter.png"))
+        self.icone_editer = tk.PhotoImage(file=obtenir_chemin_image("editer.png"))
         # print(obtenir_chemin_image("VraiCalendar.png"))
-        bouton_calendrier = tk.Button(self.fenetre, image=self.icone_calendrier, command=lambda: Calendrier(time.time()))
-        bouton_calendrier.pack(side=tk.TOP, anchor="nw")
-        bouton_ajouter = tk.Button(self.fenetre, image=self.icone_ajouter, command=Evenement.ajouter_evenement)
-        bouton_ajouter.pack()
+        button_frame = tk.Frame(self.fenetre)
+        button_frame.pack(side=tk.TOP, anchor=tk.NW)
+        bouton_calendrier = tk.Button(button_frame, image=self.icone_calendrier, command=lambda: Calendrier(time.time()))
+        bouton_calendrier.pack(side=tk.LEFT)
+        bouton_ajouter = tk.Button(button_frame, image=self.icone_ajouter, command=Evenement.ajouter_evenement)
+        bouton_ajouter.pack(side=tk.RIGHT)
+        bouton_editer = tk.Button(button_frame, image=self.icone_editer)
+        bouton_editer.pack(side=tk.RIGHT)
 
+
+
+"""
+        bouton_ajouter = tk.Button(self.fenetre, image=self.icone_ajouter, command=Evenement.ajouter_evenement)
+        bouton_ajouter.pack(side=tk.RIGHT)
+        bouton_editer = tk.Button(self.fenetre, image=self.icone_editer) #, command=Evenement.ajouter_evenement)
+        bouton_editer.pack(side=tk.RIGHT)
+        bouton_supprimer = tk.Button(self.fenetre, image=self.icone_supprimer) # ,command=Evenement.ajouter_evenement)
+        bouton_supprimer.pack(side=tk.RIGHT)
+"""
 
 def obtenir_chemin_image(nom_image):
     chemin_base = os.path.dirname(os.path.abspath(__file__))
