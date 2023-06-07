@@ -56,14 +56,6 @@ class Evenement():
                 pass  # Le fichier est créé vide
 
 
-    def sauvegarder_evenement(self): #fonction permettant de sauvegarder les évenements dans le fichier texte
-        with open(self.fichier_evenements, "a") as f:
-            f.write(f"{self.horaire}\n")
-            f.write(f"{self.priorite}\n")
-            f.write(f"{self.titre}\n")
-            f.write(f"{self.description}\n")
-            f.write("\n")
-
     def lire_evenements(self):      #fonction permettant de retrouver des évenements dans le fichier texte
         self.creer_fichier(self.fichier_evenements)
         evenements = [] #liste d'évenements vides
