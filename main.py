@@ -54,12 +54,7 @@ class Evenement():
         if not os.path.exists(fichier):
             with open(fichier, "w") as f:
                 pass  # Le fichier est créé vide
-    def creer_evenement(): #fonction permettant de creer les évenements en fonction des données de l'utilisateur
-        horaire = input("Entrez l'horaire de l'événement : ")
-        priorite = input("Entrez la priorité de l'événement (1, 2 ou 3) : ")
-        titre = input("Entrez le titre de l'événement : ")
-        description = input("Entrez la description de l'événement : ")
-        return Evenement(horaire, priorite, titre, description)
+
 
     def sauvegarder_evenement(self): #fonction permettant de sauvegarder les évenements dans le fichier texte
         with open(self.fichier_evenements, "a") as f:
