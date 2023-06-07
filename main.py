@@ -9,7 +9,7 @@ import time
 Creation de la classe meteo
 Elle permet de gérer toutes les données que l'on veut récupérer comme la météo, ...
 A COMPLETER
-""""
+"""
 class Meteo:
     def __init__(self, api_key):
         self.api_key = api_key
