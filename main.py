@@ -10,19 +10,19 @@ Creation de la classe meteo
 Elle permet de gérer toutes les données que l'on veut récupérer comme la météo, ...
 A COMPLETER
 """
-class Meteo:
+class Meteo():
     def __init__(self, api_key):
         self.api_key = api_key
 
     def obtenir_prevision_meteo(self, city, days):
         current_time = int(time.time())
-        forecast_url = f"http://api.openweathermap.org/data/2.5/forecast/daily?q={city}&cnt={days}&appid={self.api_key}&dt={current_time}"
-        response = requests.get(forecast_url)
-        forecast_data = response.json()
+        prevision_url = f"http://api.openweathermap.org/data/2.5/forecast/daily?q={city}&cnt={days}&appid={self.api_key}&dt={current_time}"
+        reponse = requests.get(prevision_url)
+        prevision_data = reponse.json()
 
         prevision_meteo = []
 
-        for day_data in forecast_data["list"]:
+        for day_data in prevision_data["list"]:
             date = time.strftime("%Y-%m-%d", time.localtime(day_data["dt"]))
             temperature = day_data["temp"]["day"]
             weather = day_data["weather"][0]["main"]
@@ -54,12 +54,8 @@ class Evenement():
         if not os.path.exists(fichier):
             with open(fichier, "w") as f:
                 pass  # Le fichier est créé vide
-    def creer_evenement(): #fonction permettant de creer les évenements en fonction des données de l'utilisateur
-        horaire = input("Entrez l'horaire de l'événement : ")
-        priorite = input("Entrez la priorité de l'événement (1, 2 ou 3) : ")
-        titre = input("Entrez le titre de l'événement : ")
-        description = input("Entrez la description de l'événement : ")
-        return Evenement(horaire, priorite, titre, description)
+
+
 
     def sauvegarder_evenement(self): #fonction permettant de sauvegarder les évenements dans le fichier texte
         with open(self.fichier_evenements, "a") as f:
@@ -152,15 +148,9 @@ class Calendrier():
     def __init__(self, startTime):
         # Abbreviations des jours de la semaine
         self.jour = ("Lu", "Ma", "Me", "Je", "Ve", "Sa", "Di")
-        self.position_jour = { # Il faut regarder si on peut mettre bibliothèque en francais ?
-            "Monday": 1,
-            "Tuesday": 2,
-            "Wednesday": 3,
-            "Thursday": 4,
-            "Friday": 5,
-            "Saturday": 6,
-            "Sunday": 7,
-        }
+        # Il faut regarder si on peut mettre bibliothèque en francais ?
+        # Dictionnaire des positions des jours de la semaine
+        self.position_jour = {"Monday": 1, "Tuesday": 2, "Wednesday": 3, "Thursday": 4, "Friday": 5, "Saturday": 6, "Sunday": 7,}
 
         # Creation de la nouvelle fenetre du calendrier
         self.fenetre_calendrier = tk.Toplevel()
@@ -187,6 +177,7 @@ class Calendrier():
         print(time.strftime("%d %B %A", time.localtime(self.seconde_actuelle))) # Affichage du jour, du mois et du nom du jour correspondants
 
         self.mois_actuel = time.strftime("%m", time.localtime(self.seconde_actuelle)) # Obtention du mois actuel
+        #Dans l expression time.strftime("%m", time.localtime(self.seconde_actuelle)), la fonction strftime() est utilisée pour formater la date représentée par self.seconde_actuelle en extrayant le mois.
         # Aucun mois ne possede moins de 27 jours, on initialise la longueur a 27
         longueur_mois = 27
         for i in range(5):
