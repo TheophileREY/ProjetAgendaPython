@@ -8,28 +8,28 @@ import requests
 """
 Creation de la classe meteo
 Elle permet de gérer toutes les données que l'on veut récupérer comme la météo, ...
-
+A COMPLETER
 """
 class Meteo:
     def __init__(self, api_key):
         self.api_key = api_key
 
-    def get_weather_forecast(self, city, days):
+    def obtenir_prevision_meteo(self, city, days):
         current_time = int(time.time())
         forecast_url = f"http://api.openweathermap.org/data/2.5/forecast/daily?q={city}&cnt={days}&appid={self.api_key}&dt={current_time}"
         response = requests.get(forecast_url)
         forecast_data = response.json()
 
-        weather_forecast = []
+        prevision_meteo = []
 
         for day_data in forecast_data["list"]:
             date = time.strftime("%Y-%m-%d", time.localtime(day_data["dt"]))
             temperature = day_data["temp"]["day"]
             weather = day_data["weather"][0]["main"]
 
-            weather_forecast.append({"date": date, "temperature": temperature, "weather": weather})
+            prevision_meteo.append({"date": date, "temperature": temperature, "weather": weather})
 
-        return weather_forecast
+        return prevision_meteo
 
 
     """
@@ -152,7 +152,7 @@ class Calendrier():
     def __init__(self, startTime):
         # Abbreviations des jours de la semaine
         self.jour = ("Lu", "Ma", "Me", "Je", "Ve", "Sa", "Di")
-        self.position_jour = {
+        self.position_jour = { # Il faut regarder si on peut mettre bibliothèque en francais ?
             "Monday": 1,
             "Tuesday": 2,
             "Wednesday": 3,
@@ -183,17 +183,17 @@ class Calendrier():
     def affichage_calendrier(self, startTime):
         num_jour = int(time.strftime("%d", time.localtime(startTime))) # Obtention du numéro du jour du mois actuel
         # il y a 86400sec dans 1 jour
-        self.currentTime = startTime - (num_jour * 86400) + 86400 # Calcul du temps actuel en se déplaçant au premier jour du mois
-        print(time.strftime("%d %B %A", time.localtime(self.currentTime))) # Affichage du jour, du mois et du nom du jour correspondants
+        self.seconde_actuelle = startTime - (num_jour * 86400) + 86400 # Calcul du temps actuel en se déplaçant au premier jour du mois
+        print(time.strftime("%d %B %A", time.localtime(self.seconde_actuelle))) # Affichage du jour, du mois et du nom du jour correspondants
 
-        self.currentMonth = time.strftime("%m", time.localtime(self.currentTime)) # Obtention du mois actuel
+        self.mois_actuel = time.strftime("%m", time.localtime(self.seconde_actuelle)) # Obtention du mois actuel
         # Aucun mois ne possede moins de 27 jours, on initialise la longueur a 27
         longueur_mois = 27
         for i in range(5):
-            _t = self.currentTime + (86400 * (i + 27)) # Calcul du temps pour le jour suivant
+            _t = self.seconde_actuelle + (86400 * (i + 27)) # Calcul du temps pour le jour suivant
             print(time.strftime("%B", time.localtime(_t))) # Affichage du mois correspondant
-            if time.strftime("%m", time.localtime(_t)) != self.currentMonth: # Vérification si le mois a changé
-                print(longueur_mois) # Affichage de la longueur du mois actuel
+            if time.strftime("%m", time.localtime(_t)) != self.mois_actuel: # Vérification si le mois a changé
+                print(longueur_mois) # Affichage de la longueur du mois actuel, pour le debuguage
                 break
             longueur_mois += 1 # Incrémenter la longueur du mois
         # Detruire toutes les autres frame du calendrier qui existe.
@@ -203,7 +203,7 @@ class Calendrier():
         except Exception:
             print("Erreur")
 
-        self.calendarFrame = tk.LabelFrame(self.fenetre_calendrier, text=time.strftime("%B %Y", time.localtime(self.currentTime))) # Création d'une nouvelle frame pour le calendrier avec le mois et l'année actuels
+        self.calendarFrame = tk.LabelFrame(self.fenetre_calendrier, text=time.strftime("%B %Y", time.localtime(self.seconde_actuelle))) # Création d'une nouvelle frame pour le calendrier avec le mois et l'année actuels
         self.calendarFrame.pack(side=tk.TOP, fill=tk.BOTH, expand=1) # Positionnement de la frame dans la fenêtre
 
 
@@ -215,7 +215,7 @@ class Calendrier():
         # Fonction permettant d'afficher la date puis de detruire le calendrier.
         # Elle renvoie la date au format %A %d %B %Y = Jour (lettre) NumeroJour (nombre) Mois (lettre) Année (nombre)
         def buttonFunction(returnTime):
-            return_time = self.currentTime + (86400 * returnTime) # Calcul de la date de retour en ajoutant le nombre de jours
+            return_time = self.seconde_actuelle + (86400 * returnTime) # Calcul de la date de retour en ajoutant le nombre de jours
             print(return_time)
             print(time.strftime("%A %d %B %Y", time.localtime(return_time)))  # On affiche la date cliquée
             self.fenetre_calendrier.destroy() # Fermeture de la fenêtre du calendrier
@@ -225,12 +225,12 @@ class Calendrier():
         # Creation des boutons pour chaque jour
         row = 1
         for i in range(longueur_mois):
-            _d = time.localtime(self.currentTime + (86400 * i)) # Obtention de la date correspondante au jour
-            _day = time.strftime("%A", _d) # Obtention du nom du jour
+            _d = time.localtime(self.seconde_actuelle + (86400 * i)) # Obtention de la date correspondante au jour
+            _jour = time.strftime("%A", _d) # Obtention du nom du jour
 
             tk.Button(self.calendarFrame, text=(i + 1), command=lambda i=i: buttonFunction(i)).grid(
-                column=self.position_jour[_day], row=row, sticky=tk.N + tk.E + tk.W + tk.S) # Création d'un bouton avec une fonction associée
-            if self.position_jour[_day] == 7:
+                column=self.position_jour[_jour], row=row, sticky=tk.N + tk.E + tk.W + tk.S) # Création d'un bouton avec une fonction associée
+            if self.position_jour[_jour] == 7:
                 row += 1
 
         for i in range(7):
@@ -241,19 +241,19 @@ class Calendrier():
     # Aller au mois suivant
     def mois_suivant(self):
         for i in range(32):
-            _c = time.strftime("%m", time.localtime(self.currentTime + (86400 * i))) # Obtention du mois pour le jour suivant
-            if _c != self.currentMonth: # Vérification si le mois a changé
-                self.currentTime += 86400 * i # Mise à jour du temps actuel pour le premier jour du mois suivant
-                self.affichage_calendrier(self.currentTime) # Appel de la fonction d'affichage du calendrier avec le nouveau temps
+            _c = time.strftime("%m", time.localtime(self.seconde_actuelle + (86400 * i))) # Obtention du mois pour le jour suivant
+            if _c != self.mois_actuel: # Vérification si le mois a changé
+                self.seconde_actuelle += 86400 * i # Mise à jour du temps actuel pour le premier jour du mois suivant
+                self.affichage_calendrier(self.seconde_actuelle) # Appel de la fonction d'affichage du calendrier avec le nouveau temps
                 break
 
     # Aller au mois precedent
     def mois_precedent(self):
         for i in range(32):
-            _c = time.strftime("%m", time.localtime(self.currentTime - (86400 * i))) # Obtention du mois pour le jour précédent
-            if _c != self.currentMonth: # Vérification si le mois a changé
-                self.currentTime -= 86400 * i # Mise à jour du temps actuel pour le premier jour du mois précédent
-                self.affichage_calendrier(self.currentTime) # Appel de la fonction d'affichage du calendrier avec le nouveau temps
+            _c = time.strftime("%m", time.localtime(self.seconde_actuelle - (86400 * i))) # Obtention du mois pour le jour précédent
+            if _c != self.mois_actuel: # Vérification si le mois a changé
+                self.seconde_actuelle -= 86400 * i # Mise à jour du temps actuel pour le premier jour du mois précédent
+                self.affichage_calendrier(self.seconde_actuelle) # Appel de la fonction d'affichage du calendrier avec le nouveau temps
                 break
 
 
