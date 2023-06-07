@@ -2,14 +2,14 @@ import tkinter as tk
 from tkinter import messagebox
 import os
 import time
-import openweather
-import requests
+#import openweather
+#import requests
 
 """
 Creation de la classe meteo
 Elle permet de gérer toutes les données que l'on veut récupérer comme la météo, ...
 A COMPLETER
-"""
+""""""
 class Meteo:
     def __init__(self, api_key):
         self.api_key = api_key
@@ -30,14 +30,13 @@ class Meteo:
             prevision_meteo.append({"date": date, "temperature": temperature, "weather": weather})
 
         return prevision_meteo
+"""
 
-
-    """
-    Creation de la classe Evenement
-    Elle permet de gérer la création, la suppression et la modification des evenements
-    Les evenements seront stockés dans un fichier txt. Un evenment fera 4 lignes avec une caracteristique par ligne
-
-    """
+"""
+ Creation de la classe Evenement
+ Elle permet de gérer la création, la suppression et la modification des evenements
+ Les evenements seront stockés dans un fichier txt. Un evenment fera 4 lignes avec une caracteristique par ligne
+"""
 class Evenement():
     def __init__(self, horaire, priorite, titre, description):
         self.fichier_evenements = "fichier_evenements.txt"  # Nom du fichier
@@ -73,6 +72,15 @@ class Evenement():
         for evenement in evenements:
             print(evenement)
             print("=" * 30)
+
+
+
+    def modifier_evenements():
+        fenetre_modif = tk.Toplevel()
+        fenetre_modif.title("Modifier un evénement")
+
+
+
 
     # créatioon de la fenetre permettant d'ajouter une évenement
     def ajouter_evenement():
@@ -263,16 +271,12 @@ class Affichage():
         bouton_calendrier.pack(side=tk.LEFT)
         bouton_ajouter = tk.Button(button_frame, image=self.icone_ajouter, command=Evenement.ajouter_evenement)
         bouton_ajouter.pack(side=tk.RIGHT)
-        bouton_editer = tk.Button(button_frame, image=self.icone_editer)
+        bouton_editer = tk.Button(button_frame, image=self.icone_editer, command=Evenement.modifier_evenements)
         bouton_editer.pack(side=tk.RIGHT)
 
 
 
 """
-        bouton_ajouter = tk.Button(self.fenetre, image=self.icone_ajouter, command=Evenement.ajouter_evenement)
-        bouton_ajouter.pack(side=tk.RIGHT)
-        bouton_editer = tk.Button(self.fenetre, image=self.icone_editer) #, command=Evenement.ajouter_evenement)
-        bouton_editer.pack(side=tk.RIGHT)
         bouton_supprimer = tk.Button(self.fenetre, image=self.icone_supprimer) # ,command=Evenement.ajouter_evenement)
         bouton_supprimer.pack(side=tk.RIGHT)
 """
