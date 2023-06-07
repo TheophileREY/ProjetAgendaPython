@@ -9,7 +9,7 @@ import time
 Creation de la classe meteo
 Elle permet de gérer toutes les données que l'on veut récupérer comme la météo, ...
 A COMPLETER
-""""""
+""""
 class Meteo:
     def __init__(self, api_key):
         self.api_key = api_key
@@ -30,7 +30,7 @@ class Meteo:
             prevision_meteo.append({"date": date, "temperature": temperature, "weather": weather})
 
         return prevision_meteo
-"""
+
 
 """
  Creation de la classe Evenement
@@ -78,8 +78,6 @@ class Evenement():
     def modifier_evenements():
         fenetre_modif = tk.Toplevel()
         fenetre_modif.title("Modifier un evénement")
-
-
 
 
     # créatioon de la fenetre permettant d'ajouter une évenement
