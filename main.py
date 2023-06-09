@@ -65,6 +65,7 @@ class Evenement():
             f.write("\n")
 
     def lire_evenements(self):      #fonction permettant de retrouver des évenements dans le fichier texte
+        evenements = []
         self.creer_fichier(self.fichier_evenements)
         evenements = [] #liste d'évenements vides
         with open(self.fichier_evenements, "r") as f:
@@ -77,16 +78,73 @@ class Evenement():
                 evenements.append(Evenement(horaire, priorite, titre, description)) #ajoute les évenements listé apparavant a la liste évenements
         return evenements
 
+
     def afficher_evenements(evenements):  #fonction permettant de séparer les évenements par des === dans le fichier texte
         for evenement in evenements:
             print(evenement)
             print("=" * 30)
 
-
-
-    def modifier_evenements():
+    def modifier_evenements(self):
         fenetre_modif = tk.Toplevel()
-        fenetre_modif.title("Modifier un evénement")
+        fenetre_modif.title("Modifier un événement")
+
+        # Récupérer la liste des événements depuis le fichier
+        evenements_edit = self.lire_evenements()
+
+        # Créer une liste des titres d'événements pour la sélection
+        titres_evenements = [evenement.titre for evenement in evenements_edit]
+
+        # Fonction de mise à jour de l'événement sélectionné
+        def mettre_a_jour_evenement():
+            # Récupérer les informations du formulaire
+            titre_selectionne = liste_titres.get()
+            horaire = entry_horaire.get()
+            priorite = entry_priorite.get()
+            description = entry_description.get()
+
+            # Trouver l'événement correspondant dans la liste
+            evenement_selectionne = None
+            for evenement in evenements_edit:
+                if evenement.titre == titre_selectionne:
+                    evenement_selectionne = evenement
+                break
+
+            # Mettre à jour les informations de l'événement
+            evenement_selectionne.horaire = horaire
+            evenement_selectionne.priorite = priorite
+            evenement_selectionne.description = description
+
+            # Sauvegarder les modifications dans le fichier
+            sauvegarder_evenement(evenements_edit)
+
+            messagebox.showinfo("Modification", "Événement modifié avec succès.")
+            fenetre_modif.destroy()
+
+        # Créer les éléments de l'interface graphique
+        label_titre = tk.Label(fenetre_modif, text="Sélectionnez un événement :")
+        label_titre.pack()
+        liste_titres = tk.Combobox(fenetre_modif, values=titres_evenements)
+        liste_titres.pack()
+
+        label_horaire = tk.Label(fenetre_modif, text="Nouvel horaire :")
+        label_horaire.pack()
+        entry_horaire = tk.Entry(fenetre_modif)
+        entry_horaire.pack()
+
+        label_priorite = tk.Label(fenetre_modif, text="Nouvelle priorité (1, 2 ou 3) :")
+        label_priorite.pack()
+        entry_priorite = tk.Entry(fenetre_modif)
+        entry_priorite.pack()
+
+        label_description = tk.Label(fenetre_modif, text="Nouvelle description :")
+        label_description.pack()
+        entry_description = tk.Entry(fenetre_modif)
+        entry_description.pack()
+
+        bouton_modifier = tk.Button(fenetre_modif, text="Modifier", command=mettre_a_jour_evenement)
+        bouton_modifier.pack()
+
+
 
 
     # créatioon de la fenetre permettant d'ajouter une évenement
@@ -290,5 +348,8 @@ def obtenir_chemin_image(nom_image):
     return chemin_image
 
 # Affichage
+evenement1 = Evenement("2023-05-22 10:00", "Haute", "Réunion", "Réunion d'équipe")
+evenement2 = Evenement("2023-05-22 14:00", "Moyenne", "Rendez-vous", "Rendez-vous chez le dentiste")
+evenements = [evenement1, evenement2]
 fenetre = Affichage()
 fenetre.fenetre.mainloop()
