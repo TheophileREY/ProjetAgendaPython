@@ -3,7 +3,7 @@ from tkinter import messagebox
 import os
 import time
 #import openweather
-#import requests
+import requests
 
 """
 Creation de la classe meteo
@@ -324,22 +324,38 @@ class Affichage():
         self.icone_calendrier = tk.PhotoImage(file=obtenir_chemin_image("calendrier.png"))
         self.icone_ajouter = tk.PhotoImage(file=obtenir_chemin_image("ajouter.png"))
         self.icone_editer = tk.PhotoImage(file=obtenir_chemin_image("editer.png"))
-        # print(obtenir_chemin_image("VraiCalendar.png"))
+        self.icone_precedent = tk.PhotoImage(file=obtenir_chemin_image("precedent.png"))
+        self.icone_suivant = tk.PhotoImage(file=obtenir_chemin_image("suivant.png"))
         button_frame = tk.Frame(self.fenetre)
         button_frame.pack(side=tk.TOP, anchor=tk.NW)
         bouton_calendrier = tk.Button(button_frame, image=self.icone_calendrier, command=lambda: Calendrier(time.time()))
         bouton_calendrier.pack(side=tk.LEFT)
         bouton_ajouter = tk.Button(button_frame, image=self.icone_ajouter, command=Evenement.ajouter_evenement)
-        bouton_ajouter.pack(side=tk.RIGHT)
+        bouton_ajouter.pack(side=tk.LEFT)
         bouton_editer = tk.Button(button_frame, image=self.icone_editer, command=Evenement.modifier_evenements)
-        bouton_editer.pack(side=tk.RIGHT)
+        bouton_editer.pack(side=tk.LEFT)
+        bouton_suivant = tk.Button(button_frame, image=self.icone_suivant)
+        bouton_suivant.pack(side=tk.RIGHT)
+        bouton_precedent = tk.Button(button_frame, image=self.icone_precedent)
+        bouton_precedent.pack(side=tk.RIGHT)
+        self.afficher_cases()  # Appel à la méthode afficher_cases pour afficher les cases
+        self.fenetre.mainloop()
 
+    def afficher_cases(self):
+        cases_frame = tk.Frame(self.fenetre)  # Création d'une nouvelle frame pour les cases
+        cases_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=1)  # Positionnement de la frame dans la fenêtre
+        for i in range(14):
+            case_frame = tk.Frame(cases_frame, bg="white", borderwidth=1, relief="solid", width=50)  # Création d'une nouvelle frame pour chaque case avec une largeur fixe de 50 pixels
+            case_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=1)  # Positionnement de la case
+            espace_vide = tk.Label(case_frame, text=f"{7 + i}h - {8 + i}h", width=7)  # Espace vide à gauche de la case avec une largeur légèrement réduite
+            espace_vide.pack(side=tk.LEFT)  # Positionnement de l'espace vide
+            case = tk.Frame(case_frame, bg="white", borderwidth=1, relief="solid")  # Création d'une nouvelle case avec une bordure
+            case.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)  # Positionnement de la case
+            label = tk.Label(case, text="xxxxxxxxx", width=10)  # Création d'un label avec le texte "xxxxxxxxx" et une largeur fixe
+            label.pack(side=tk.RIGHT, fill=tk.BOTH, expand=1)  # Positionnement du label dans la case
 
+        cases_frame.pack_propagate(0)  # Désactivation de la propagation du redimensionnement
 
-"""
-        bouton_supprimer = tk.Button(self.fenetre, image=self.icone_supprimer) # ,command=Evenement.ajouter_evenement)
-        bouton_supprimer.pack(side=tk.RIGHT)
-"""
 
 def obtenir_chemin_image(nom_image):
     chemin_base = os.path.dirname(os.path.abspath(__file__))
@@ -348,8 +364,6 @@ def obtenir_chemin_image(nom_image):
     return chemin_image
 
 # Affichage
-evenement1 = Evenement("2023-05-22 10:00", "Haute", "Réunion", "Réunion d'équipe")
-evenement2 = Evenement("2023-05-22 14:00", "Moyenne", "Rendez-vous", "Rendez-vous chez le dentiste")
-evenements = [evenement1, evenement2]
 fenetre = Affichage()
 fenetre.fenetre.mainloop()
+
