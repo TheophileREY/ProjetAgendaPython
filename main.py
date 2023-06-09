@@ -341,10 +341,14 @@ class Calendrier():
 Creation de la classe Affichage 
 Elle contient une fenêtre principale qui affiche un bouton pour ouvrir la fenetre du calendrier
 """
+import datetime
+
+import datetime
+
 class Affichage():
     def __init__(self):
         self.fenetre = tk.Tk()
-        self.fenetre.geometry('650x650')
+        self.fenetre.geometry('700x700')
         self.fenetre.title('Agenda')
         self.icone_calendrier = tk.PhotoImage(file=obtenir_chemin_image("calendrier.png"))
         self.icone_ajouter = tk.PhotoImage(file=obtenir_chemin_image("ajouter.png"))
@@ -365,26 +369,33 @@ class Affichage():
         bouton_suivant = tk.Button(button_frame, image=self.icone_suivant)
         bouton_suivant.grid(row=0, column=4)
 
-        meteo_frame = tk.Frame(self.fenetre, bg="white", width=200, height=100, borderwidth=1, relief="solid")
-        meteo_frame.grid(row=0, column=5, padx=10, pady=10, sticky="ne")
+        jour_frame = tk.Frame(self.fenetre, bg="white", width=200, height=100, borderwidth=1, relief="solid")
+        jour_frame.grid(row=0, column=5, padx=5, pady=10, sticky="ne")
 
-        self.info_meteo_label = tk.Label(meteo_frame, text="", bg="white")
-        self.info_meteo_label.pack()
+        meteo_frame = tk.Frame(self.fenetre, bg="white", width=200, height=100, borderwidth=1, relief="solid")
+        meteo_frame.grid(row=0, column=6, padx=5, pady=10, sticky="ne")
+
+        self.jour_label = tk.Label(jour_frame, text="", bg="white", width=25, height=3)
+        self.jour_label.pack()
+
+        self.meteo_label = tk.Label(meteo_frame, text="", bg="white", width=25, height=3)
+        self.meteo_label.pack()
 
         self.afficher_cases()  # Appel à la méthode afficher_cases pour afficher les cases
         self.fenetre.mainloop()
 
     def afficher_cases(self):
         cases_frame = tk.Frame(self.fenetre)  # Création d'une nouvelle frame pour les cases
-        cases_frame.grid(row=1, column=0, columnspan=6, sticky="nsew")  # Positionnement de la frame dans la fenêtre
+        cases_frame.grid(row=1, column=0, columnspan=7, sticky="nsew")  # Positionnement de la frame dans la fenêtre
+
+        now = datetime.datetime.now()
+        date_text = now.strftime("%A %d %B %Y")
+        self.jour_label.configure(text=date_text)
 
         meteo = Meteo('Dijon,fr')
         categorie, icone, temperature, pression = meteo.obtenir_condition_meteo()
-        if categorie and icone:
-            info_text = f"Condition météo : {categorie}\nTempérature : {temperature}°C\nPression : {pression} hPa"
-            self.info_meteo_label.configure(text=info_text)
-        else:
-            self.info_meteo_label.configure(text="Erreur lors de la récupération de la météo")
+        meteo_text = f"Condition météo : {categorie}\nTempérature : {temperature}°C\nPression : {pression} hPa"
+        self.meteo_label.configure(text=meteo_text)
 
         for i in range(14):
             case_frame = tk.Frame(cases_frame, bg="white", borderwidth=1, relief="solid")
@@ -403,7 +414,13 @@ class Affichage():
 
         self.fenetre.grid_rowconfigure(1, weight=1)
         self.fenetre.grid_columnconfigure(0, weight=1)
-        self.fenetre.grid_columnconfigure(5, weight=1)
+        self.fenetre.grid_columnconfigure(7, weight=1)
+
+
+
+
+
+
 
 
 
