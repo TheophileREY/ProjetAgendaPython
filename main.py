@@ -10,26 +10,51 @@ Creation de la classe meteo
 Elle permet de gérer toutes les données que l'on veut récupérer comme la météo, ...
 A COMPLETER
 """
-class Meteo():
-    def __init__(self, api_key):
-        self.api_key = api_key
 
-    def obtenir_prevision_meteo(self, city, days):
-        current_time = int(time.time())
-        prevision_url = f"http://api.openweathermap.org/data/2.5/forecast/daily?q={city}&cnt={days}&appid={self.api_key}&dt={current_time}"
-        reponse = requests.get(prevision_url)
-        prevision_data = reponse.json()
+class Meteo:
+    def __init__(self, ville):
+        self.ville = ville
+        self.api_key = 'API_KEY'  # a changer
 
-        prevision_meteo = []
+    def obtenir_condition_meteo(self):
+        # Vérifiez si la clé d'API est définie pour déterminer si vous utilisez l'API réelle ou une simulation
+        if self.api_key == 'API_KEY':
+            # Simulation des valeurs afin de ne pas consommer le compte
+            return 'Ensoleillé', '01d', 25, 1010
+        else:
+            url = f'http://api.openweathermap.org/data/2.5/weather?q={self.ville}&appid={self.api_key}&units=metric'
+            response = requests.get(url)
+            if response.status_code == 200:
+                data = response.json()
+                condition_id = data['weather'][0]['id']
+                condition_categorie = self.obtenir_categorie_condition(condition_id)
+                icone = data['weather'][0]['icon']
+                temperature = data['main']['temp']
+                pression = data['main']['pressure']
+                return condition_categorie, icone, temperature, pression
+            else:
+                return None, None, None, None
 
-        for day_data in prevision_data["list"]:
-            date = time.strftime("%Y-%m-%d", time.localtime(day_data["dt"]))
-            temperature = day_data["temp"]["day"]
-            weather = day_data["weather"][0]["main"]
+    @staticmethod
+    def obtenir_categorie_condition(condition_id):
+        if condition_id // 100 == 8:
+            return 'Nuageux'
+        elif condition_id == 800:
+            return 'Ensoleillé'
+        elif condition_id // 100 == 7:
+            return 'Brumeux'
+        elif condition_id // 100 == 6:
+            return 'Neigeux'
+        elif condition_id // 100 == 5:
+            return 'Pluvieux'
+        elif condition_id // 100 == 3:
+            return 'Bruine'
+        elif condition_id // 100 == 2:
+            return 'Orageux'
+        else:
+            return 'Inconnu'
 
-            prevision_meteo.append({"date": date, "temperature": temperature, "weather": weather})
 
-        return prevision_meteo
 
 
 """
@@ -319,42 +344,71 @@ Elle contient une fenêtre principale qui affiche un bouton pour ouvrir la fenet
 class Affichage():
     def __init__(self):
         self.fenetre = tk.Tk()
-        self.fenetre.geometry('400x400')
+        self.fenetre.geometry('650x650')
         self.fenetre.title('Agenda')
         self.icone_calendrier = tk.PhotoImage(file=obtenir_chemin_image("calendrier.png"))
         self.icone_ajouter = tk.PhotoImage(file=obtenir_chemin_image("ajouter.png"))
         self.icone_editer = tk.PhotoImage(file=obtenir_chemin_image("editer.png"))
         self.icone_precedent = tk.PhotoImage(file=obtenir_chemin_image("precedent.png"))
         self.icone_suivant = tk.PhotoImage(file=obtenir_chemin_image("suivant.png"))
+
         button_frame = tk.Frame(self.fenetre)
-        button_frame.pack(side=tk.TOP, anchor=tk.NW)
+        button_frame.grid(row=0, column=0, columnspan=4, sticky="w")
         bouton_calendrier = tk.Button(button_frame, image=self.icone_calendrier, command=lambda: Calendrier(time.time()))
-        bouton_calendrier.pack(side=tk.LEFT)
+        bouton_calendrier.grid(row=0, column=0)
         bouton_ajouter = tk.Button(button_frame, image=self.icone_ajouter, command=Evenement.ajouter_evenement)
-        bouton_ajouter.pack(side=tk.LEFT)
+        bouton_ajouter.grid(row=0, column=1)
         bouton_editer = tk.Button(button_frame, image=self.icone_editer, command=Evenement.modifier_evenements)
-        bouton_editer.pack(side=tk.LEFT)
-        bouton_suivant = tk.Button(button_frame, image=self.icone_suivant)
-        bouton_suivant.pack(side=tk.RIGHT)
+        bouton_editer.grid(row=0, column=2)
         bouton_precedent = tk.Button(button_frame, image=self.icone_precedent)
-        bouton_precedent.pack(side=tk.RIGHT)
+        bouton_precedent.grid(row=0, column=3)
+        bouton_suivant = tk.Button(button_frame, image=self.icone_suivant)
+        bouton_suivant.grid(row=0, column=4)
+
+        meteo_frame = tk.Frame(self.fenetre, bg="white", width=200, height=100, borderwidth=1, relief="solid")
+        meteo_frame.grid(row=0, column=5, padx=10, pady=10, sticky="ne")
+
+        self.info_meteo_label = tk.Label(meteo_frame, text="", bg="white")
+        self.info_meteo_label.pack()
+
         self.afficher_cases()  # Appel à la méthode afficher_cases pour afficher les cases
         self.fenetre.mainloop()
 
     def afficher_cases(self):
         cases_frame = tk.Frame(self.fenetre)  # Création d'une nouvelle frame pour les cases
-        cases_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=1)  # Positionnement de la frame dans la fenêtre
-        for i in range(14):
-            case_frame = tk.Frame(cases_frame, bg="white", borderwidth=1, relief="solid", width=50)  # Création d'une nouvelle frame pour chaque case avec une largeur fixe de 50 pixels
-            case_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=1)  # Positionnement de la case
-            espace_vide = tk.Label(case_frame, text=f"{7 + i}h - {8 + i}h", width=7)  # Espace vide à gauche de la case avec une largeur légèrement réduite
-            espace_vide.pack(side=tk.LEFT)  # Positionnement de l'espace vide
-            case = tk.Frame(case_frame, bg="white", borderwidth=1, relief="solid")  # Création d'une nouvelle case avec une bordure
-            case.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)  # Positionnement de la case
-            label = tk.Label(case, text="xxxxxxxxx", width=10)  # Création d'un label avec le texte "xxxxxxxxx" et une largeur fixe
-            label.pack(side=tk.RIGHT, fill=tk.BOTH, expand=1)  # Positionnement du label dans la case
+        cases_frame.grid(row=1, column=0, columnspan=6, sticky="nsew")  # Positionnement de la frame dans la fenêtre
 
-        cases_frame.pack_propagate(0)  # Désactivation de la propagation du redimensionnement
+        meteo = Meteo('Dijon,fr')
+        categorie, icone, temperature, pression = meteo.obtenir_condition_meteo()
+        if categorie and icone:
+            info_text = f"Condition météo : {categorie}\nTempérature : {temperature}°C\nPression : {pression} hPa"
+            self.info_meteo_label.configure(text=info_text)
+        else:
+            self.info_meteo_label.configure(text="Erreur lors de la récupération de la météo")
+
+        for i in range(14):
+            case_frame = tk.Frame(cases_frame, bg="white", borderwidth=1, relief="solid")
+            case_frame.pack(fill=tk.X)  # Positionnement de la case pour occuper toute la largeur
+
+            espace_vide = tk.Label(case_frame, text=f"{7 + i}h - {8 + i}h", width=7, height=2)
+            espace_vide.pack(side=tk.LEFT)
+
+            case = tk.Frame(case_frame, bg="white", borderwidth=1, relief="solid")
+            case.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)  # Positionnement de la case avec expansion
+            case.configure(height=2)  # Ajustement de la hauteur de la case à 50 pixels
+
+            label = tk.Label(case, text="xxxxxxxxx",
+                             width=10)  # Création d'un label avec le texte "xxxxxxxxx" et une largeur fixe
+            label.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)  # Positionnement du label dans la case avec expansion
+
+        self.fenetre.grid_rowconfigure(1, weight=1)
+        self.fenetre.grid_columnconfigure(0, weight=1)
+        self.fenetre.grid_columnconfigure(5, weight=1)
+
+
+
+
+
 
 
 def obtenir_chemin_image(nom_image):
@@ -363,7 +417,9 @@ def obtenir_chemin_image(nom_image):
     chemin_image = os.path.join(chemin_base, dossier_images, nom_image)
     return chemin_image
 
+
+
+
 # Affichage
 fenetre = Affichage()
 fenetre.fenetre.mainloop()
-
