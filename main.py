@@ -4,7 +4,8 @@ import os
 import time
 #import openweather
 import requests
-
+import datetime
+import calendar
 """
 Creation de la classe meteo
 Elle permet de gérer toutes les données que l'on veut récupérer comme la météo, ...
@@ -263,7 +264,7 @@ class Calendrier():
         num_jour = int(time.strftime("%d", time.localtime(startTime))) # Obtention du numéro du jour du mois actuel
         # il y a 86400sec dans 1 jour
         self.seconde_actuelle = startTime - (num_jour * 86400) + 86400 # Calcul du temps actuel en se déplaçant au premier jour du mois
-        print(time.strftime("%d %B %A", time.localtime(self.seconde_actuelle))) # Affichage du jour, du mois et du nom du jour correspondants
+        #print(time.strftime("%d %B %A", time.localtime(self.seconde_actuelle))) # Affichage du jour, du mois et du nom du jour correspondants
 
         self.mois_actuel = time.strftime("%m", time.localtime(self.seconde_actuelle)) # Obtention du mois actuel
         #Dans l expression time.strftime("%m", time.localtime(self.seconde_actuelle)), la fonction strftime() est utilisée pour formater la date représentée par self.seconde_actuelle en extrayant le mois.
@@ -271,9 +272,9 @@ class Calendrier():
         longueur_mois = 27
         for i in range(5):
             _t = self.seconde_actuelle + (86400 * (i + 27)) # Calcul du temps pour le jour suivant
-            print(time.strftime("%B", time.localtime(_t))) # Affichage du mois correspondant
+            #print(time.strftime("%B", time.localtime(_t))) # Affichage du mois correspondant
             if time.strftime("%m", time.localtime(_t)) != self.mois_actuel: # Vérification si le mois a changé
-                print(longueur_mois) # Affichage de la longueur du mois actuel, pour le debuguage
+                #print(longueur_mois) # Affichage de la longueur du mois actuel, pour le debuguage
                 break
             longueur_mois += 1 # Incrémenter la longueur du mois
         # Detruire toutes les autres frame du calendrier qui existe.
@@ -281,7 +282,7 @@ class Calendrier():
             if (self.calendarFrame.winfo_exists() == True):
                 self.calendarFrame.destroy() # Destruction de la frame du calendrier si elle existe
         except Exception:
-            print("Erreur")
+            pass
 
         self.calendarFrame = tk.LabelFrame(self.fenetre_calendrier, text=time.strftime("%B %Y", time.localtime(self.seconde_actuelle))) # Création d'une nouvelle frame pour le calendrier avec le mois et l'année actuels
         self.calendarFrame.pack(side=tk.TOP, fill=tk.BOTH, expand=1) # Positionnement de la frame dans la fenêtre
@@ -296,10 +297,10 @@ class Calendrier():
         # Elle renvoie la date au format %A %d %B %Y = Jour (lettre) NumeroJour (nombre) Mois (lettre) Année (nombre)
         def buttonFunction(returnTime):
             return_time = self.seconde_actuelle + (86400 * returnTime) # Calcul de la date de retour en ajoutant le nombre de jours
-            print(return_time)
-            print(time.strftime("%A %d %B %Y", time.localtime(return_time)))  # On affiche la date cliquée
+            #print(return_time)
+            #print(time.strftime("%d/%m/%Y", time.localtime(return_time)))  # On affiche la date cliquée
             self.fenetre_calendrier.destroy() # Fermeture de la fenêtre du calendrier
-            self.datefinale = time.strftime("%A %d %B %Y", time.localtime(return_time)) # Conversion de la date en format souhaité
+            self.datefinale = time.strftime("%d/%m/%Y", time.localtime(return_time)) # Conversion de la date en format souhaité
             return self.datefinale  # On renvoie la date cliquée
 
         # Creation des boutons pour chaque jour
@@ -337,16 +338,18 @@ class Calendrier():
                 break
 
 
+    def obtenir_date_selectionnee(self):
+        self.fenetre_calendrier.wait_window()  # Attend que la fenêtre du calendrier se ferme
+        return self.datefinale
+
 """
 Creation de la classe Affichage 
 Elle contient une fenêtre principale qui affiche un bouton pour ouvrir la fenetre du calendrier
 """
-import datetime
-
-import datetime
 
 class Affichage():
     def __init__(self):
+        self.date = datetime.date.today().strftime("%d/%m/%Y")
         self.fenetre = tk.Tk()
         self.fenetre.geometry('700x700')
         self.fenetre.title('Agenda')
@@ -358,15 +361,15 @@ class Affichage():
 
         button_frame = tk.Frame(self.fenetre)
         button_frame.grid(row=0, column=0, columnspan=4, sticky="w")
-        bouton_calendrier = tk.Button(button_frame, image=self.icone_calendrier, command=lambda: Calendrier(time.time()))
+        bouton_calendrier = tk.Button(button_frame, image=self.icone_calendrier, command=self.ouvrir_calendrier)
         bouton_calendrier.grid(row=0, column=0)
         bouton_ajouter = tk.Button(button_frame, image=self.icone_ajouter, command=Evenement.ajouter_evenement)
         bouton_ajouter.grid(row=0, column=1)
         bouton_editer = tk.Button(button_frame, image=self.icone_editer, command=Evenement.modifier_evenements)
         bouton_editer.grid(row=0, column=2)
-        bouton_precedent = tk.Button(button_frame, image=self.icone_precedent)
+        bouton_precedent = tk.Button(button_frame, image=self.icone_precedent, command=self.afficher_date_precedente)
         bouton_precedent.grid(row=0, column=3)
-        bouton_suivant = tk.Button(button_frame, image=self.icone_suivant)
+        bouton_suivant = tk.Button(button_frame, image=self.icone_suivant, command=self.afficher_date_suivante)
         bouton_suivant.grid(row=0, column=4)
 
         jour_frame = tk.Frame(self.fenetre, bg="white", width=200, height=100, borderwidth=1, relief="solid")
@@ -384,12 +387,33 @@ class Affichage():
         self.afficher_cases()  # Appel à la méthode afficher_cases pour afficher les cases
         self.fenetre.mainloop()
 
+    def obtenir_date_selectionnee(self):
+        self.fenetre_calendrier.wait_window()  # Attend que la fenêtre du calendrier se ferme
+        return self.datefinale
+
+    def ouvrir_calendrier(self):
+        calendrier = Calendrier(time.time())
+        date_selectionnee = calendrier.obtenir_date_selectionnee()
+        if date_selectionnee:
+            self.jour_label.configure(text=date_selectionnee)
+
+    def afficher_date_suivante(self):
+        date_obj = datetime.datetime.strptime(self.date, "%d/%m/%Y")
+        date_suivante = date_obj + datetime.timedelta(days=1)
+        self.date = date_suivante.strftime("%d/%m/%Y")
+        self.jour_label.configure(text=self.date)
+
+    def afficher_date_precedente(self):
+        date_obj = datetime.datetime.strptime(self.date, "%d/%m/%Y")
+        date_precedente = date_obj - datetime.timedelta(days=1)
+        self.date = date_precedente.strftime("%d/%m/%Y")
+        self.jour_label.configure(text=self.date)
     def afficher_cases(self):
         cases_frame = tk.Frame(self.fenetre)  # Création d'une nouvelle frame pour les cases
         cases_frame.grid(row=1, column=0, columnspan=7, sticky="nsew")  # Positionnement de la frame dans la fenêtre
 
-        now = datetime.datetime.now()
-        date_text = now.strftime("%A %d %B %Y")
+        jour_selectionne = datetime.datetime.now()
+        date_text = jour_selectionne.strftime("%d/%m/%Y")
         self.jour_label.configure(text=date_text)
 
         meteo = Meteo('Dijon,fr')
@@ -415,11 +439,6 @@ class Affichage():
         self.fenetre.grid_rowconfigure(1, weight=1)
         self.fenetre.grid_columnconfigure(0, weight=1)
         self.fenetre.grid_columnconfigure(7, weight=1)
-
-
-
-
-
 
 
 
