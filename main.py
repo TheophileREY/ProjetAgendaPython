@@ -273,10 +273,6 @@ class Affichage():
 
 
 """
-        bouton_ajouter = tk.Button(self.fenetre, image=self.icone_ajouter, command=Evenement.ajouter_evenement)
-        bouton_ajouter.pack(side=tk.RIGHT)
-        bouton_editer = tk.Button(self.fenetre, image=self.icone_editer) #, command=Evenement.ajouter_evenement)
-        bouton_editer.pack(side=tk.RIGHT)
         bouton_supprimer = tk.Button(self.fenetre, image=self.icone_supprimer) # ,command=Evenement.ajouter_evenement)
         bouton_supprimer.pack(side=tk.RIGHT)
 """
