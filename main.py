@@ -358,6 +358,7 @@ class Affichage():
         self.icone_editer = tk.PhotoImage(file=obtenir_chemin_image("editer.png"))
         self.icone_precedent = tk.PhotoImage(file=obtenir_chemin_image("precedent.png"))
         self.icone_suivant = tk.PhotoImage(file=obtenir_chemin_image("suivant.png"))
+        self.icon_supprimer = tk.PhotoImage(file=obtenir_chemin_image("supprimer.png"))
 
         button_frame = tk.Frame(self.fenetre)
         button_frame.grid(row=0, column=0, columnspan=4, sticky="w")
@@ -371,8 +372,6 @@ class Affichage():
         bouton_precedent.grid(row=0, column=3)
         bouton_suivant = tk.Button(button_frame, image=self.icone_suivant, command=self.afficher_date_suivante)
         bouton_suivant.grid(row=0, column=4)
-        bouton_supprimer = tk.Button(button_frame, image=self.icone_ajouter)
-        bouton_supprimer.grid(row=0, column=5)
 
         jour_frame = tk.Frame(self.fenetre, bg="white", width=200, height=100, borderwidth=1, relief="solid")
         jour_frame.grid(row=0, column=5, padx=5, pady=10, sticky="ne")
