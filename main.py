@@ -319,44 +319,59 @@ Elle contient une fenêtre principale qui affiche un bouton pour ouvrir la fenet
 
 class Affichage():
     def __init__(self):
+        # Initialisation des attributs de la classe
         self.date = datetime.date.today().strftime("%d/%m/%Y")
         self.fenetre = tk.Tk()
         self.fenetre.geometry('750x750')
         self.fenetre.title('Agenda')
+
+        # Chargement des icônes à partir des fichiers d'images
         self.icone_calendrier = tk.PhotoImage(file=obtenir_chemin_image("calendrier.png"))
         self.icone_ajouter = tk.PhotoImage(file=obtenir_chemin_image("ajouter.png"))
         self.icone_editer = tk.PhotoImage(file=obtenir_chemin_image("editer.png"))
         self.icone_precedent = tk.PhotoImage(file=obtenir_chemin_image("precedent.png"))
         self.icone_suivant = tk.PhotoImage(file=obtenir_chemin_image("suivant.png"))
 
+        # Création d'un cadre pour les boutons
         button_frame = tk.Frame(self.fenetre)
         button_frame.grid(row=0, column=0, columnspan=4, sticky="w")
+
+        # Création des boutons avec les icônes correspondantes et les commandes associées
         bouton_calendrier = tk.Button(button_frame, image=self.icone_calendrier, command=self.ouvrir_calendrier)
         bouton_calendrier.grid(row=0, column=0)
+
         bouton_ajouter = tk.Button(button_frame, image=self.icone_ajouter, command=Evenement.ajouter_evenement)
         bouton_ajouter.grid(row=0, column=1)
+
         bouton_editer = tk.Button(button_frame, image=self.icone_editer, command=Evenement.modifier_evenements)
         bouton_editer.grid(row=0, column=2)
+
         bouton_precedent = tk.Button(button_frame, image=self.icone_precedent, command=self.afficher_date_precedente)
         bouton_precedent.grid(row=0, column=3)
+
         bouton_suivant = tk.Button(button_frame, image=self.icone_suivant, command=self.afficher_date_suivante)
         bouton_suivant.grid(row=0, column=4)
 
+        # Création des cadres pour afficher le jour et les informations météo
         jour_frame = tk.Frame(self.fenetre, bg="white", width=200, height=100, borderwidth=1, relief="solid")
         jour_frame.grid(row=0, column=5, padx=5, pady=10, sticky="ne")
 
         meteo_frame = tk.Frame(self.fenetre, bg="white", width=200, height=100, borderwidth=1, relief="solid")
         meteo_frame.grid(row=0, column=6, padx=5, pady=10, sticky="ne")
 
-
+        # Création des labels pour afficher le jour et les informations météo
         self.jour_label = tk.Label(jour_frame, text="", bg="white", width=25, height=3)
         self.jour_label.pack()
 
         self.meteo_label = tk.Label(meteo_frame, text="", bg="white", width=25, height=3)
         self.meteo_label.pack()
 
-        self.afficher_cases()  # Appel à la méthode afficher_cases pour afficher les cases
+        # Appel à la méthode afficher_cases pour afficher les cases
+        self.afficher_cases()
+
+        # Boucle principale de l'interface graphique
         self.fenetre.mainloop()
+
 
     def obtenir_date_selectionnee(self):
         self.fenetre_calendrier.wait_window()  # Attend que la fenêtre du calendrier se ferme
