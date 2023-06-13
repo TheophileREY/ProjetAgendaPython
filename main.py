@@ -371,12 +371,15 @@ class Affichage():
         bouton_precedent.grid(row=0, column=3)
         bouton_suivant = tk.Button(button_frame, image=self.icone_suivant, command=self.afficher_date_suivante)
         bouton_suivant.grid(row=0, column=4)
+        bouton_supprimer = tk.Button(button_frame, image=self.icone_ajouter)
+        bouton_supprimer.grid(row=0, column=5)
 
         jour_frame = tk.Frame(self.fenetre, bg="white", width=200, height=100, borderwidth=1, relief="solid")
         jour_frame.grid(row=0, column=5, padx=5, pady=10, sticky="ne")
 
         meteo_frame = tk.Frame(self.fenetre, bg="white", width=200, height=100, borderwidth=1, relief="solid")
         meteo_frame.grid(row=0, column=6, padx=5, pady=10, sticky="ne")
+
 
         self.jour_label = tk.Label(jour_frame, text="", bg="white", width=25, height=3)
         self.jour_label.pack()
