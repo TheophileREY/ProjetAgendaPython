@@ -112,61 +112,33 @@ class Evenement():
         fenetre_modif = tk.Toplevel()
         fenetre_modif.title("Modifier un événement")
 
-        # Récupérer la liste des événements depuis le fichier
-        evenements_edit = self.lire_evenements()
+        evenements_a_modif = Evenement.lire_evenements()
 
-        # Créer une liste des titres d'événements pour la sélection
-        titres_evenements = [evenement.titre for evenement in evenements_edit]
+            #Fonction permettant de supprimer un évenement déjà enregistré
+            def supprimmer_evenements(evenement):
+                evenements_a_modif.remove(evenement)
+                with open(self.fichier_evenements , "w") as f:
+                    for e in evenements_a_modif:
+                        f.write(f"{e.horaire}\n")
+                        f.write(f"{e.priorite}\n")
+                        f.write(f"{e.titre}\n")
+                        f.write(f"{e.description}\n")
+                        f.write("\n")
+                    messagebox.showinfo("Suppression", "Evenement suppriém ave succes")
+                    refresh_list()
 
-        # Fonction de mise à jour de l'événement sélectionné
-        def mettre_a_jour_evenement():
-            # Récupérer les informations du formulaire
-            titre_selectionne = liste_titres.get()
-            horaire = entry_horaire.get()
-            priorite = entry_priorite.get()
-            description = entry_description.get()
+            def modifier_evenement(evenement):
+                def sauvegarder_modifs():
 
-            # Trouver l'événement correspondant dans la liste
-            evenement_selectionne = None
-            for evenement in evenements_edit:
-                if evenement.titre == titre_selectionne:
-                    evenement_selectionne = evenement
-                break
 
-            # Mettre à jour les informations de l'événement
-            evenement_selectionne.horaire = horaire
-            evenement_selectionne.priorite = priorite
-            evenement_selectionne.description = description
 
-            # Sauvegarder les modifications dans le fichier
-            sauvegarder_evenement(evenements_edit)
 
-            messagebox.showinfo("Modification", "Événement modifié avec succès.")
-            fenetre_modif.destroy()
 
-        # Créer les éléments de l'interface graphique
-        label_titre = tk.Label(fenetre_modif, text="Sélectionnez un événement :")
-        label_titre.pack()
-        liste_titres = tk.Combobox(fenetre_modif, values=titres_evenements)
-        liste_titres.pack()
 
-        label_horaire = tk.Label(fenetre_modif, text="Nouvel horaire :")
-        label_horaire.pack()
-        entry_horaire = tk.Entry(fenetre_modif)
-        entry_horaire.pack()
 
-        label_priorite = tk.Label(fenetre_modif, text="Nouvelle priorité (1, 2 ou 3) :")
-        label_priorite.pack()
-        entry_priorite = tk.Entry(fenetre_modif)
-        entry_priorite.pack()
 
-        label_description = tk.Label(fenetre_modif, text="Nouvelle description :")
-        label_description.pack()
-        entry_description = tk.Entry(fenetre_modif)
-        entry_description.pack()
 
-        bouton_modifier = tk.Button(fenetre_modif, text="Modifier", command=mettre_a_jour_evenement)
-        bouton_modifier.pack()
+
 
 
 
