@@ -356,7 +356,6 @@ class Affichage():
         self.icone_editer = tk.PhotoImage(file=obtenir_chemin_image("editer.png"))
         self.icone_precedent = tk.PhotoImage(file=obtenir_chemin_image("precedent.png"))
         self.icone_suivant = tk.PhotoImage(file=obtenir_chemin_image("suivant.png"))
-        self.icon_supprimer = tk.PhotoImage(file=obtenir_chemin_image("supprimer.png"))
 
         button_frame = tk.Frame(self.fenetre)
         button_frame.grid(row=0, column=0, columnspan=4, sticky="w")
