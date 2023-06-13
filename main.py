@@ -2,10 +2,8 @@ import tkinter as tk
 from tkinter import messagebox
 import os
 import time
-#import openweather
 import requests
 import datetime
-import calendar
 """
 Creation de la classe meteo
 Elle permet de gérer toutes les données que l'on veut récupérer comme la météo, ...
@@ -241,7 +239,7 @@ class Calendrier():
         # Il faut regarder si on peut mettre bibliothèque en francais ?
         # Dictionnaire des positions des jours de la semaine
         self.position_jour = {"Monday": 1, "Tuesday": 2, "Wednesday": 3, "Thursday": 4, "Friday": 5, "Saturday": 6, "Sunday": 7,}
-
+        self.datefinale = None
         # Creation de la nouvelle fenetre du calendrier
         self.fenetre_calendrier = tk.Toplevel()
         self.fenetre_calendrier.wm_resizable(0, 0)
@@ -351,7 +349,7 @@ class Affichage():
     def __init__(self):
         self.date = datetime.date.today().strftime("%d/%m/%Y")
         self.fenetre = tk.Tk()
-        self.fenetre.geometry('700x700')
+        self.fenetre.geometry('750x750')
         self.fenetre.title('Agenda')
         self.icone_calendrier = tk.PhotoImage(file=obtenir_chemin_image("calendrier.png"))
         self.icone_ajouter = tk.PhotoImage(file=obtenir_chemin_image("ajouter.png"))
