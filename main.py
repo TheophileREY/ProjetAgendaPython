@@ -70,6 +70,21 @@ class Evenement():
         self.description = description
         self.creer_fichier(self.fichier_evenements)  # Création du fichier si nécessaire
 
+    def lire_evenements():  # Fonction permettant de retrouver des évenements dans le fichier texte
+        evenements = []
+        self.creer_fichier(self.fichier_evenements)
+        evenements = []  # liste d'évenements vides
+        with open(self.fichier_evenements, "r") as f:
+            lignes = f.readlines()
+            for i in range(0, len(lignes), 5):
+                horaire = lignes[i].strip()
+                priorite = lignes[i + 1].strip()
+                titre = lignes[i + 2].strip()
+                description = lignes[i + 3].strip()
+                evenements.append(Evenement(horaire, priorite, titre,
+                                            description))  # ajoute les évenements listé apparavant a la liste évenements
+
+        return evenements
     def __str__(self):
         return f"Horaire : {self.horaire}\nPriorité : {self.priorite}\nTitre : {self.titre}\nDescription : {self.description}"
 
@@ -88,20 +103,6 @@ class Evenement():
             f.write(f"{self.description}\n")
             f.write("\n")
 
-    def lire_evenements(self):      #fonction permettant de retrouver des évenements dans le fichier texte
-        evenements = []
-        self.creer_fichier(self.fichier_evenements)
-        evenements = [] #liste d'évenements vides
-        with open(self.fichier_evenements, "r") as f:
-            lignes = f.readlines()
-            for i in range(0, len(lignes), 5):
-                horaire = lignes[i].strip()
-                priorite = lignes[i + 1].strip()
-                titre = lignes[i + 2].strip()
-                description = lignes[i + 3].strip()
-                evenements.append(Evenement(horaire, priorite, titre, description)) #ajoute les évenements listé apparavant a la liste évenements
-        return evenements
-
 
     def afficher_evenements(evenements):  #fonction permettant de séparer les évenements par des === dans le fichier texte
         for evenement in evenements:
@@ -112,35 +113,94 @@ class Evenement():
         fenetre_modif = tk.Toplevel()
         fenetre_modif.title("Modifier un événement")
 
-        evenements_a_modif = Evenement.lire_evenements()
+        evenements_a_modif = lire_evenements()
 
-            #Fonction permettant de supprimer un évenement déjà enregistré
-            def supprimmer_evenements(evenement):
-                evenements_a_modif.remove(evenement)
-                with open(self.fichier_evenements , "w") as f:
+        # Fonction pour supprimer un événement
+        def supprimer_evenement(evenement):
+            evenements_a_modif.remove(evenement)
+            with open(self.fichier_evenements, "w") as f:
+                for e in evenements_a_modif:
+                    f.write(f"{e.horaire}\n")
+                    f.write(f"{e.priorite}\n")
+                    f.write(f"{e.titre}\n")
+                    f.write(f"{e.description}\n")
+                    f.write("\n")
+            messagebox.showinfo("Suppression", "Événement supprimé avec succès.")
+            refresh_list()
+
+        # Fonction pour modifier un événement
+        def modifier_evenement(evenement):
+            def sauvegarder_modifications():
+                evenement.horaire = entry_horaire.get()
+                evenement.priorite = entry_priorite.get()
+                evenement.titre = entry_titre.get()
+                evenement.description = entry_description.get()
+                with open(self.fichier_evenements, "w") as f:
                     for e in evenements_a_modif:
                         f.write(f"{e.horaire}\n")
                         f.write(f"{e.priorite}\n")
                         f.write(f"{e.titre}\n")
                         f.write(f"{e.description}\n")
                         f.write("\n")
-                    messagebox.showinfo("Suppression", "Evenement suppriém ave succes")
-                    refresh_list()
+                messagebox.showinfo("Modification", "Événement modifié avec succès.")
+                fenetre_modif_ajout.destroy()
+                refresh_list()
 
-            def modifier_evenement(evenement):
-                def sauvegarder_modifs():
+            fenetre_modif_ajout = tk.Toplevel()
+            fenetre_modif_ajout.title("Modifier un événement")
 
+            # Créer les zones de texte pré-remplies avec les informations actuelles
+            label_horaire = tk.Label(fenetre_modif_ajout, text="Horaire :")
+            label_horaire.pack()
+            entry_horaire = tk.Entry(fenetre_modif_ajout)
+            entry_horaire.pack()
+            entry_horaire.insert(0, evenement.horaire)
 
+            label_priorite = tk.Label(fenetre_modif_ajout, text="Priorité (1, 2 ou 3) :")
+            label_priorite.pack()
+            entry_priorite = tk.Entry(fenetre_modif_ajout)
+            entry_priorite.pack()
+            entry_priorite.insert(0, evenement.priorite)
 
+            label_titre = tk.Label(fenetre_modif_ajout, text="Titre :")
+            label_titre.pack()
+            entry_titre = tk.Entry(fenetre_modif_ajout)
+            entry_titre.pack()
+            entry_titre.insert(0, evenement.titre)
 
+            label_description = tk.Label(fenetre_modif_ajout, text="Description :")
+            label_description.pack()
+            entry_description = tk.Entry(fenetre_modif_ajout)
+            entry_description.pack()
+            entry_description.insert(0, evenement.description)
 
+            # Bouton de sauvegarde des modifications
+            bouton_sauvegarder_modif = tk.Button(fenetre_modif_ajout, text="Enregistrer",
+                                                 command=sauvegarder_modifications)
+            bouton_sauvegarder_modif.pack(side=tk.RIGHT, padx=10, pady=10)
 
+        # Fonction pour rafraîchir la liste des événements affichée
+        def refresh_list():
+            for widget in fenetre_modif.winfo_children():
+                widget.destroy()
+            evenements_a_modif = lire_evenements()
+            for evenement in evenements_a_modif:
+                frame = tk.Frame(fenetre_modif)
+                frame.pack()
 
+                label = tk.Label(frame, text=str(evenement))
+                label.pack(side=tk.LEFT)
 
+                # Bouton Supprimer
+                bouton_supprimer = tk.Button(frame, text="Supprimer",
+                                             command=lambda e=evenement: supprimer_evenement(e))
+                bouton_supprimer.pack(side=tk.LEFT, padx=5)
 
+                # Bouton Modifier
+                bouton_modifier = tk.Button(frame, text="Modifier", command=lambda e=evenement: modifier_evenement(e))
+                bouton_modifier.pack(side=tk.LEFT, padx=5)
 
-
-
+        refresh_list()
 
 
     # créatioon de la fenetre permettant d'ajouter une évenement
@@ -312,6 +372,7 @@ class Calendrier():
         self.fenetre_calendrier.wait_window()  # Attend que la fenêtre du calendrier se ferme
         return self.datefinale
 
+
 """
 Creation de la classe Affichage 
 Elle contient une fenêtre principale qui affiche un bouton pour ouvrir la fenetre du calendrier
@@ -425,11 +486,6 @@ class Affichage():
         self.fenetre.grid_rowconfigure(1, weight=1)
         self.fenetre.grid_columnconfigure(0, weight=1)
         self.fenetre.grid_columnconfigure(7, weight=1)
-
-
-
-
-
 
 
 
