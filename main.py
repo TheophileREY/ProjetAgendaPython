@@ -503,7 +503,7 @@ class Affichage():
                 description = lignes[j + 3].strip()
 
                 if 7 <= int(horaire.split(':')[0]) <= 21 and heure_debut == int(horaire.split(':')[0]):
-                    label = tk.Label(case, text=f"{titre}\n{description}", width=10)
+                    label = tk.Label(case, text=f"{titre}\n{description}\n Prioritée : {priorite}", width=10)
                     label.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
                     evenement_trouve = True
                     break
