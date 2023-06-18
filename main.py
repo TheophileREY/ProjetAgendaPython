@@ -1,9 +1,13 @@
+from tkinter import Tk, Toplevel, Label, Entry, Button, Scrollbar, Canvas, Frame
 import tkinter as tk
 from tkinter import messagebox
 import os
 import time
 import requests
 import datetime
+
+
+
 """
 Creation de la classe meteo
 Elle permet de gérer toutes les données que l'on veut récupérer comme la météo, ...
@@ -61,7 +65,7 @@ class Meteo:
  Elle permet de gérer la création, la suppression et la modification des evenements
  Les evenements seront stockés dans un fichier txt. Un evenment fera 4 lignes avec une caracteristique par ligne
 """
-class Evenement():
+class Evenement:
     def __init__(self, horaire, priorite, titre, description):
         self.fichier_evenements = "fichier_evenements.txt"  # Nom du fichier
         self.horaire = horaire
@@ -70,21 +74,6 @@ class Evenement():
         self.description = description
         self.creer_fichier(self.fichier_evenements)  # Création du fichier si nécessaire
 
-    def lire_evenements():  # Fonction permettant de retrouver des évenements dans le fichier texte
-        evenements = []
-        self.creer_fichier(self.fichier_evenements)
-        evenements = []  # liste d'évenements vides
-        with open(self.fichier_evenements, "r") as f:
-            lignes = f.readlines()
-            for i in range(0, len(lignes), 5):
-                horaire = lignes[i].strip()
-                priorite = lignes[i + 1].strip()
-                titre = lignes[i + 2].strip()
-                description = lignes[i + 3].strip()
-                evenements.append(Evenement(horaire, priorite, titre,
-                                            description))  # ajoute les évenements listé apparavant a la liste évenements
-
-        return evenements
     def __str__(self):
         return f"Horaire : {self.horaire}\nPriorité : {self.priorite}\nTitre : {self.titre}\nDescription : {self.description}"
 
@@ -93,134 +82,26 @@ class Evenement():
             with open(fichier, "w") as f:
                 pass  # Le fichier est créé vide
 
-
-
-    def sauvegarder_evenement(self): #fonction permettant de sauvegarder les évenements dans le fichier texte
+    def sauvegarder_evenement(self):
         with open(self.fichier_evenements, "a") as f:
             f.write(f"{self.horaire}\n")
             f.write(f"{self.priorite}\n")
             f.write(f"{self.titre}\n")
             f.write(f"{self.description}\n")
-            f.write("\n")
 
-
-    def afficher_evenements(evenements):  #fonction permettant de séparer les évenements par des === dans le fichier texte
-        for evenement in evenements:
-            print(evenement)
-            print("=" * 30)
-
-    def modifier_evenements(self):
-        fenetre_modif = tk.Toplevel()
-        fenetre_modif.title("Modifier un événement")
-
-        evenements_a_modif = lire_evenements()
-
-        # Fonction pour supprimer un événement
-        def supprimer_evenement(evenement):
-            evenements_a_modif.remove(evenement)
-            with open(self.fichier_evenements, "w") as f:
-                for e in evenements_a_modif:
-                    f.write(f"{e.horaire}\n")
-                    f.write(f"{e.priorite}\n")
-                    f.write(f"{e.titre}\n")
-                    f.write(f"{e.description}\n")
-                    f.write("\n")
-            messagebox.showinfo("Suppression", "Événement supprimé avec succès.")
-            refresh_list()
-
-        # Fonction pour modifier un événement
-        def modifier_evenement(evenement):
-            def sauvegarder_modifications():
-                evenement.horaire = entry_horaire.get()
-                evenement.priorite = entry_priorite.get()
-                evenement.titre = entry_titre.get()
-                evenement.description = entry_description.get()
-                with open(self.fichier_evenements, "w") as f:
-                    for e in evenements_a_modif:
-                        f.write(f"{e.horaire}\n")
-                        f.write(f"{e.priorite}\n")
-                        f.write(f"{e.titre}\n")
-                        f.write(f"{e.description}\n")
-                        f.write("\n")
-                messagebox.showinfo("Modification", "Événement modifié avec succès.")
-                fenetre_modif_ajout.destroy()
-                refresh_list()
-
-            fenetre_modif_ajout = tk.Toplevel()
-            fenetre_modif_ajout.title("Modifier un événement")
-
-            # Créer les zones de texte pré-remplies avec les informations actuelles
-            label_horaire = tk.Label(fenetre_modif_ajout, text="Horaire :")
-            label_horaire.pack()
-            entry_horaire = tk.Entry(fenetre_modif_ajout)
-            entry_horaire.pack()
-            entry_horaire.insert(0, evenement.horaire)
-
-            label_priorite = tk.Label(fenetre_modif_ajout, text="Priorité (1, 2 ou 3) :")
-            label_priorite.pack()
-            entry_priorite = tk.Entry(fenetre_modif_ajout)
-            entry_priorite.pack()
-            entry_priorite.insert(0, evenement.priorite)
-
-            label_titre = tk.Label(fenetre_modif_ajout, text="Titre :")
-            label_titre.pack()
-            entry_titre = tk.Entry(fenetre_modif_ajout)
-            entry_titre.pack()
-            entry_titre.insert(0, evenement.titre)
-
-            label_description = tk.Label(fenetre_modif_ajout, text="Description :")
-            label_description.pack()
-            entry_description = tk.Entry(fenetre_modif_ajout)
-            entry_description.pack()
-            entry_description.insert(0, evenement.description)
-
-            # Bouton de sauvegarde des modifications
-            bouton_sauvegarder_modif = tk.Button(fenetre_modif_ajout, text="Enregistrer",
-                                                 command=sauvegarder_modifications)
-            bouton_sauvegarder_modif.pack(side=tk.RIGHT, padx=10, pady=10)
-
-        # Fonction pour rafraîchir la liste des événements affichée
-        def refresh_list():
-            for widget in fenetre_modif.winfo_children():
-                widget.destroy()
-            evenements_a_modif = lire_evenements()
-            for evenement in evenements_a_modif:
-                frame = tk.Frame(fenetre_modif)
-                frame.pack()
-
-                label = tk.Label(frame, text=str(evenement))
-                label.pack(side=tk.LEFT)
-
-                # Bouton Supprimer
-                bouton_supprimer = tk.Button(frame, text="Supprimer",
-                                             command=lambda e=evenement: supprimer_evenement(e))
-                bouton_supprimer.pack(side=tk.LEFT, padx=5)
-
-                # Bouton Modifier
-                bouton_modifier = tk.Button(frame, text="Modifier", command=lambda e=evenement: modifier_evenement(e))
-                bouton_modifier.pack(side=tk.LEFT, padx=5)
-
-        refresh_list()
-
-
-    # créatioon de la fenetre permettant d'ajouter une évenement
+    @staticmethod
     def ajouter_evenement():
-        fenetre_ajout = tk.Toplevel()
+        fenetre_ajout = Toplevel()
         fenetre_ajout.title("Ajouter un événement")
 
-        # Fonction de sauvegarde
-        def sauvegarder_evenement(): #fonction appelée quand on appui sur save
+        def sauvegarder_evenement():
             horaire = entry_horaire.get()
             priorite = entry_priorite.get()
             titre = entry_titre.get()
             description = entry_description.get()
 
-            # Vérifier si toutes les zones de texte sont remplies
             if horaire and priorite and titre and description:
-                # Créer l'objet Evenement
                 evenement = Evenement(horaire, priorite, titre, description)
-
-                # Sauvegarder l'événement
                 evenement.sauvegarder_evenement()
 
                 messagebox.showinfo("Sauvegarde", "Événement sauvegardé avec succès.")
@@ -228,33 +109,147 @@ class Evenement():
             else:
                 messagebox.showwarning("Erreur", "Veuillez remplir tous les champs.")
 
-        # Créer les zones de texte
-        label_horaire = tk.Label(fenetre_ajout, text="Horaire :")
+        label_horaire = Label(fenetre_ajout, text="Horaire :")
         label_horaire.pack()
-        entry_horaire = tk.Entry(fenetre_ajout)
+        entry_horaire = Entry(fenetre_ajout)
         entry_horaire.pack()
 
-        label_priorite = tk.Label(fenetre_ajout, text="Priorité (1, 2 ou 3) :")
+        label_priorite = Label(fenetre_ajout, text="Priorité (1, 2 ou 3) :")
         label_priorite.pack()
-        entry_priorite = tk.Entry(fenetre_ajout)
+        entry_priorite = Entry(fenetre_ajout)
         entry_priorite.pack()
 
-        label_titre = tk.Label(fenetre_ajout, text="Titre :")
+        label_titre = Label(fenetre_ajout, text="Titre :")
         label_titre.pack()
-        entry_titre = tk.Entry(fenetre_ajout)
+        entry_titre = Entry(fenetre_ajout)
         entry_titre.pack()
 
-        label_description = tk.Label(fenetre_ajout, text="Description :")
+        label_description = Label(fenetre_ajout, text="Description :")
         label_description.pack()
-        entry_description = tk.Entry(fenetre_ajout)
+        entry_description = Entry(fenetre_ajout)
         entry_description.pack()
 
-        # Bouton de sauvegarde
-        bouton_sauvegarder = tk.Button(fenetre_ajout, text="Sauvegarder", command=sauvegarder_evenement)
-        bouton_sauvegarder.pack(side=tk.RIGHT, padx=10, pady=10)
+        bouton_sauvegarder = Button(fenetre_ajout, text="Sauvegarder", command=sauvegarder_evenement)
+        bouton_sauvegarder.pack(side="right", padx=10, pady=10)
 
-        # Afficher la fenêtre
         fenetre_ajout.mainloop()
+
+    def modifier_evenement():
+        fenetre_modif = Tk()
+        fenetre_modif.title("Modifier un événement")
+
+        with open("fichier_evenements.txt", "r") as f:
+            lignes = f.readlines()
+
+        evenements = []
+        i = 0
+        while i < len(lignes):
+            if i + 3 < len(lignes):
+                horaire = lignes[i].strip()
+                priorite = lignes[i + 1].strip()
+                titre = lignes[i + 2].strip()
+                description = lignes[i + 3].strip()
+
+                evenement = {
+                    "horaire": horaire,
+                    "priorite": priorite,
+                    "titre": titre,
+                    "description": description
+                }
+
+                evenements.append(evenement)
+            i += 4
+
+        scrollbar = Scrollbar(fenetre_modif)
+        scrollbar.pack(side="right", fill="y")
+
+        canvas = Canvas(fenetre_modif, yscrollcommand=scrollbar.set)
+        canvas.pack(side="left", fill="both", expand=True)
+
+        scrollbar.config(command=canvas.yview)
+
+        cadre = Frame(canvas)
+        cadre.pack()
+
+        canvas.create_window((0, 0), window=cadre, anchor="nw")
+
+        def supprimer_evenement(cadre_evenement):
+            index = cadre.winfo_children().index(cadre_evenement)
+            evenements.pop(index)
+            cadre_evenement.destroy()
+            with open("fichier_evenements.txt", "w") as f:
+                for evt in evenements:
+                    f.write(f"{evt['horaire']}\n")
+                    f.write(f"{evt['priorite']}\n")
+                    f.write(f"{evt['titre']}\n")
+                    f.write(f"{evt['description']}\n")
+            canvas.update_idletasks()
+            canvas.config(scrollregion=canvas.bbox("all"))
+
+        for evenement in evenements:
+            cadre_evenement = Frame(cadre, padx=10, pady=10, borderwidth=1, relief="solid")
+            cadre_evenement.pack(pady=5)
+
+            label_horaire = Label(cadre_evenement, text="Horaire:")
+            label_horaire.grid(row=0, column=0, sticky="e")
+
+            entry_horaire = Entry(cadre_evenement)
+            entry_horaire.insert("end", evenement["horaire"])
+            entry_horaire.grid(row=0, column=1, padx=5, sticky="w")
+
+            label_priorite = Label(cadre_evenement, text="Priorité:")
+            label_priorite.grid(row=1, column=0, sticky="e")
+
+            entry_priorite = Entry(cadre_evenement)
+            entry_priorite.insert("end", evenement["priorite"])
+            entry_priorite.grid(row=1, column=1, padx=5, sticky="w")
+
+            label_titre = Label(cadre_evenement, text="Titre:")
+            label_titre.grid(row=2, column=0, sticky="e")
+
+            entry_titre = Entry(cadre_evenement)
+            entry_titre.insert("end", evenement["titre"])
+            entry_titre.grid(row=2, column=1, padx=5, sticky="w")
+
+            label_description = Label(cadre_evenement, text="Description:")
+            label_description.grid(row=3, column=0, sticky="e")
+
+            entry_description = Entry(cadre_evenement)
+            entry_description.insert("end", evenement["description"])
+            entry_description.grid(row=3, column=1, padx=5, sticky="w")
+
+            bouton_supprimer = Button(cadre_evenement, text="Supprimer",
+                                      command=lambda cadre_evenement=cadre_evenement: supprimer_evenement(
+                                          cadre_evenement))
+            bouton_supprimer.grid(row=4, column=0, padx=5, pady=10, sticky="w")
+
+
+            def sauvegarder_evenement(evenement, entry_horaire, entry_priorite, entry_titre, entry_description):
+                evenement["horaire"] = entry_horaire.get()
+                evenement["priorite"] = entry_priorite.get()
+                evenement["titre"] = entry_titre.get()
+                evenement["description"] = entry_description.get()
+
+                with open("fichier_evenements.txt", "w") as f:
+                    for evt in evenements:
+                        f.write(f"{evt['horaire']}\n")
+                        f.write(f"{evt['priorite']}\n")
+                        f.write(f"{evt['titre']}\n")
+                        f.write(f"{evt['description']}\n")
+
+
+            bouton_sauvegarder = Button(cadre_evenement, text="Enregistrer", command=lambda evenement=evenement,
+                                        entry_horaire=entry_horaire,
+                                        entry_priorite=entry_priorite,
+                                        entry_titre=entry_titre,
+                                        entry_description=entry_description: sauvegarder_evenement(
+                                        evenement, entry_horaire, entry_priorite, entry_titre, entry_description))
+            bouton_sauvegarder.grid(row=4, column=1, padx=5, pady=10, sticky="e")
+            canvas.update_idletasks()
+
+        canvas.config(scrollregion=canvas.bbox("all"))
+        fenetre_modif.mainloop()
+
 
 
 
@@ -294,7 +289,7 @@ class Calendrier():
         num_jour = int(time.strftime("%d", time.localtime(startTime))) # Obtention du numéro du jour du mois actuel
         # il y a 86400sec dans 1 jour
         self.seconde_actuelle = startTime - (num_jour * 86400) + 86400 # Calcul du temps actuel en se déplaçant au premier jour du mois
-        #print(time.strftime("%d %B %A", time.localtime(self.seconde_actuelle))) # Affichage du jour, du mois et du nom du jour correspondants
+        # print(time.strftime("%d %B %A", time.localtime(self.seconde_actuelle))) # Affichage du jour, du mois et du nom du jour correspondants
 
         self.mois_actuel = time.strftime("%m", time.localtime(self.seconde_actuelle)) # Obtention du mois actuel
         #Dans l expression time.strftime("%m", time.localtime(self.seconde_actuelle)), la fonction strftime() est utilisée pour formater la date représentée par self.seconde_actuelle en extrayant le mois.
@@ -328,7 +323,7 @@ class Calendrier():
         def buttonFunction(returnTime):
             return_time = self.seconde_actuelle + (86400 * returnTime) # Calcul de la date de retour en ajoutant le nombre de jours
             #print(return_time)
-            #print(time.strftime("%d/%m/%Y", time.localtime(return_time)))  # On affiche la date cliquée
+            #print(time.strftime("%A %d %B %Y", time.localtime(return_time)))  # On affiche la date cliquée
             self.fenetre_calendrier.destroy() # Fermeture de la fenêtre du calendrier
             self.datefinale = time.strftime("%d/%m/%Y", time.localtime(return_time)) # Conversion de la date en format souhaité
             return self.datefinale  # On renvoie la date cliquée
@@ -373,11 +368,12 @@ class Calendrier():
         return self.datefinale
 
 
+
+
 """
 Creation de la classe Affichage 
 Elle contient une fenêtre principale qui affiche un bouton pour ouvrir la fenetre du calendrier
 """
-
 class Affichage():
     def __init__(self):
         # Initialisation des attributs de la classe
@@ -385,6 +381,7 @@ class Affichage():
         self.fenetre = tk.Tk()
         self.fenetre.geometry('750x750')
         self.fenetre.title('Agenda')
+        self.evenement = Evenement("", "", "", "")  # Instanciation avec des valeurs vides
 
         # Chargement des icônes à partir des fichiers d'images
         self.icone_calendrier = tk.PhotoImage(file=obtenir_chemin_image("calendrier.png"))
@@ -404,7 +401,7 @@ class Affichage():
         bouton_ajouter = tk.Button(button_frame, image=self.icone_ajouter, command=Evenement.ajouter_evenement)
         bouton_ajouter.grid(row=0, column=1)
 
-        bouton_editer = tk.Button(button_frame, image=self.icone_editer, command=Evenement.modifier_evenements)
+        bouton_editer = tk.Button(button_frame, image=self.icone_editer, command=Evenement.modifier_evenement)
         bouton_editer.grid(row=0, column=2)
 
         bouton_precedent = tk.Button(button_frame, image=self.icone_precedent, command=self.afficher_date_precedente)
@@ -486,6 +483,13 @@ class Affichage():
         self.fenetre.grid_rowconfigure(1, weight=1)
         self.fenetre.grid_columnconfigure(0, weight=1)
         self.fenetre.grid_columnconfigure(7, weight=1)
+
+
+
+
+
+
+
 
 
 
