@@ -1,5 +1,29 @@
-Le programme que nous avons créée est un agenda dans lequel il est possible d'ajouter des évenements, de les modifier et de les supprimer.
-Vous pourrez definir un niveau de priorité ainsi qu'ajouter une courte description de ce denier si necessaire.
-Il est principalement codé grace a TkInter.
 
-Programme créée par SMEETS Albert, REY Théophile en deuxième année à l'ESIREM.
+# Agenda Python
+
+Le programme que nous avons créée est un agenda très simple développé dans le cadre d'un projet en deuxième année a L'ESIREM.
+
+## Fonctionnalitées
+
+Agenda permettant d'ajouter des événements sur une interface contenant les heures de 7h à 21h par plages d'une heure.
+
+Modifications et suppressions d'événements sont également disponibles, en plus de la météo de la journée.
+
+Grâce à un calendrier auquel vous pouvez accéder en cliquant sur le bouton en haut à gauche, vous pourrez naviguer rapidement vers le jour sélectionné.
+
+Enfin, il vous sera également possible de rechercher un jour précis grâce au bouton loupe permettant de rentrer une date souhaitée.
+
+### Bibliothèques utilisées
+
+```python 
+ tkinter
+ os
+ time
+ requests
+ datetime
+```
+
+## Auteurs
+
+ [@REY Théophile](https://github.com/TheophileREY)  
+ [@SMEETS Albert](https://github.com/AlbertSMEETS) 
