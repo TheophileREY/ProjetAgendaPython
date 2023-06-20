@@ -8,12 +8,12 @@ import datetime
 
 
 
+
 """
 Creation de la classe meteo
 Elle permet de gérer toutes les données que l'on veut récupérer comme la météo, ...
 A COMPLETER
 """
-
 class Meteo:
     def __init__(self, ville):
         self.ville = ville
@@ -66,16 +66,16 @@ class Meteo:
  Les evenements seront stockés dans un fichier txt. Un evenment fera 4 lignes avec une caracteristique par ligne
 """
 class Evenement:
-    def __init__(self, horaire, priorite, titre, description):
+    def __init__(self, horaire, date, titre, description):
         self.fichier_evenements = "fichier_evenements.txt"  #Nom du fichier
         self.horaire = horaire
-        self.priorite = priorite
+        self.date = date
         self.titre = titre
         self.description = description
         self.creer_fichier(self.fichier_evenements)  #Création du fichier si nécessaire
 
     def __str__(self):
-        return f"Horaire : {self.horaire}\nPriorité : {self.priorite}\nTitre : {self.titre}\nDescription : {self.description}"
+        return f"Horaire : {self.horaire}\nPriorité : {self.date}\nTitre : {self.titre}\nDescription : {self.description}"
 
     def creer_fichier(self, fichier):
         if not os.path.exists(fichier):
@@ -85,7 +85,7 @@ class Evenement:
     def sauvegarder_evenement(self):
         with open(self.fichier_evenements, "a") as f:
             f.write(f"{self.horaire}\n")
-            f.write(f"{self.priorite}\n")
+            f.write(f"{self.date}\n")
             f.write(f"{self.titre}\n")
             f.write(f"{self.description}\n")
 
@@ -96,12 +96,12 @@ class Evenement:
 
         def sauvegarder_evenement():
             horaire = entry_horaire.get()
-            priorite = entry_priorite.get()
+            date = entry_date.get()
             titre = entry_titre.get()
             description = entry_description.get()
 
-            if horaire and priorite and titre and description:
-                evenement = Evenement(horaire, priorite, titre, description)
+            if horaire and date and titre and description:
+                evenement = Evenement(horaire, date, titre, description)
                 evenement.sauvegarder_evenement()
 
                 messagebox.showinfo("Sauvegarde", "Événement sauvegardé avec succès.")
@@ -114,10 +114,10 @@ class Evenement:
         entry_horaire = Entry(fenetre_ajout)
         entry_horaire.pack()
 
-        label_priorite = Label(fenetre_ajout, text="Priorité (1, 2 ou 3) :")
-        label_priorite.pack()
-        entry_priorite = Entry(fenetre_ajout)
-        entry_priorite.pack()
+        label_date = Label(fenetre_ajout, text="Priorité (JJ/MM/AAAA) :")
+        label_date.pack()
+        entry_date = Entry(fenetre_ajout)
+        entry_date.pack()
 
         label_titre = Label(fenetre_ajout, text="Titre :")
         label_titre.pack()
@@ -146,13 +146,13 @@ class Evenement:
         while i < len(lignes):  #Création d'une boucle permettant d'identifier chaque ligne comme chaque atribu
             if i + 3 < len(lignes):
                 horaire = lignes[i].strip()
-                priorite = lignes[i + 1].strip()
+                date = lignes[i + 1].strip()
                 titre = lignes[i + 2].strip()
                 description = lignes[i + 3].strip()
 
                 evenement = {               #Création d'un dictionnaire "evenement" avec les atribus piurs précédement
                     "horaire": horaire,
-                    "priorite": priorite,
+                    "date": date,
                     "titre": titre,
                     "description": description
                 }
@@ -180,7 +180,7 @@ class Evenement:
             with open("fichier_evenements.txt", "w") as f:  #supprime l'évenement dans le fichier texted
                 for evt in liste_evenements:
                     f.write(f"{evt['horaire']}\n")
-                    f.write(f"{evt['priorite']}\n")
+                    f.write(f"{evt['date']}\n")
                     f.write(f"{evt['titre']}\n")
                     f.write(f"{evt['description']}\n")
             canvas.update_idletasks()
@@ -198,12 +198,12 @@ class Evenement:
             entry_horaire.insert("end", evenement["horaire"])
             entry_horaire.grid(row=0, column=1, padx=5, sticky="w")
 
-            label_priorite = Label(cadre_evenement, text="Priorité:")
-            label_priorite.grid(row=1, column=0, sticky="e")
+            label_date = Label(cadre_evenement, text="date")
+            label_date.grid(row=1, column=0, sticky="e")
 
-            entry_priorite = Entry(cadre_evenement)
-            entry_priorite.insert("end", evenement["priorite"])
-            entry_priorite.grid(row=1, column=1, padx=5, sticky="w")
+            entry_date = Entry(cadre_evenement)
+            entry_date.insert("end", evenement["date"])
+            entry_date.grid(row=1, column=1, padx=5, sticky="w")
 
             label_titre = Label(cadre_evenement, text="Titre:")
             label_titre.grid(row=2, column=0, sticky="e")
@@ -226,10 +226,10 @@ class Evenement:
 
             #Fonction permettant de sauvegarder les modifications d'un événement
 
-            def sauvegarder_evenement(evenement, entry_horaire, entry_priorite, entry_titre, entry_description):
+            def sauvegarder_evenement(evenement, entry_horaire, entry_date, entry_titre, entry_description):
 
                 evenement["horaire"] = entry_horaire.get()
-                evenement["priorite"] = entry_priorite.get()
+                evenement["date"] = entry_date.get()
                 evenement["titre"] = entry_titre.get()
                 evenement["description"] = entry_description.get()
 
@@ -237,7 +237,7 @@ class Evenement:
 
                     for evt in liste_evenements:
                         f.write(f"{evt['horaire']}\n")
-                        f.write(f"{evt['priorite']}\n")
+                        f.write(f"{evt['date']}\n")
                         f.write(f"{evt['titre']}\n")
                         f.write(f"{evt['description']}\n")
                 messagebox.showinfo("Modifications", "Les modifications ont été enregistrées avec succès!")
@@ -246,10 +246,10 @@ class Evenement:
                 #Création du boutton sauvegarder
             bouton_sauvegarder = Button(cadre_evenement, text="Enregistrer", command=lambda evenement=evenement,
                                         entry_horaire=entry_horaire,
-                                        entry_priorite=entry_priorite,
+                                        entry_date=entry_date,
                                         entry_titre=entry_titre,
                                         entry_description=entry_description: sauvegarder_evenement(
-                                        evenement, entry_horaire, entry_priorite, entry_titre, entry_description))
+                                        evenement, entry_horaire, entry_date, entry_titre, entry_description))
             bouton_sauvegarder.grid(row=4, column=1, padx=5, pady=10, sticky="e")
             canvas.update_idletasks()
 
@@ -384,12 +384,13 @@ Elle contient une fenêtre principale qui affiche un bouton pour ouvrir la fenet
 class Affichage():
     def __init__(self):
         #Initialisation des attributs de la classe
-        self.date = datetime.date.today().strftime("%d/%m/%Y")
+        self.date = datetime.datetime.now().date()
         self.fenetre = tk.Tk()
         self.fenetre.geometry('750x750')
         self.fenetre.title('Agenda')
         self.evenement = Evenement("", "", "", "")  #Instanciation avec des valeurs vides
-
+        self.date_selectionnee = None
+        self.evenements = self.charger_evenements()
         #Chargement des icônes à partir des fichiers d'images
         self.icone_calendrier = tk.PhotoImage(file=obtenir_chemin_image("calendrier.png"))
         self.icone_ajouter = tk.PhotoImage(file=obtenir_chemin_image("ajouter.png"))
@@ -441,48 +442,60 @@ class Affichage():
         #Boucle principale de l'interface graphique
         self.fenetre.mainloop()
 
-
-    def obtenir_date_selectionnee(self):
-        self.fenetre_calendrier.wait_window()  #Attend que la fenêtre du calendrier se ferme
-        return self.datefinale
-
     def ouvrir_calendrier(self):
-        calendrier = Calendrier(time.time())    #Crée une instance de la classe Calendrier avec le temps actuel
-        date_selectionnee = calendrier.obtenir_date_selectionnee()  #Appelle la méthode "obtenir_date_selectionnee" de l'instance "calendrier" pour obtenir la date sélectionnée
+        calendrier = Calendrier(time.time())  # Crée une instance de la classe Calendrier avec le temps actuel
+        date_selectionnee = calendrier.obtenir_date_selectionnee()  # Appelle la méthode "obtenir_date_selectionnee" de l'instance "calendrier" pour obtenir la date sélectionnée
+        if date_selectionnee:  # Vérifie si une date a été sélectionnée
+            self.date = datetime.datetime.strptime(date_selectionnee, "%d/%m/%Y")  # Convertit la date sélectionnée en objet datetime
+            self.jour_label.configure(text=self.date.strftime("%d/%m/%Y"))  # Met à jour le texte du label "jour_label" avec la date sélectionnée
+            self.afficher_cases()
 
-        if date_selectionnee:   #Vérifie si une date a été sélectionnée
-            self.jour_label.configure(text=date_selectionnee)   #Met à jour le texte du label "jour_label" avec la date sélectionnée
+    def afficher_date_suivante(self):
+        date_suivante = self.date + datetime.timedelta(days=1)
+        self.date = date_suivante
+        self.jour_label.configure(text=self.date.strftime("%d/%m/%Y"))
+        self.afficher_cases()
 
-    def afficher_date_suivante(self):   #Fonction permettant d'afficher la date suivante
-        date_obj = datetime.datetime.strptime(self.date, "%d/%m/%Y")
-        date_suivante = date_obj + datetime.timedelta(days=1)
-        self.date = date_suivante.strftime("%d/%m/%Y")
-        self.jour_label.configure(text=self.date)
+    def afficher_date_precedente(self):
+        date_precedente = self.date - datetime.timedelta(days=1)
+        self.date = date_precedente
+        self.jour_label.configure(text=self.date.strftime("%d/%m/%Y"))
+        self.afficher_cases()
 
-    def afficher_date_precedente(self):     #Fonction permettant d'afficher la date suivante
-        date_obj = datetime.datetime.strptime(self.date, "%d/%m/%Y")    #Convertit la chaîne de date en objet datetime
-        date_precedente = date_obj - datetime.timedelta(days=1) #Ajoute un jour à la date
-        self.date = date_precedente.strftime("%d/%m/%Y")    #Convertit la date suivante en une chaîne de date au format spécifié
-        self.jour_label.configure(text=self.date)   #Met à jour le texte du label "jour_label" avec la nouvelle date
+    def charger_evenements(self):
+        evenements = []
+        with open("fichier_evenements.txt", "r") as f:
+            lignes = f.readlines()
+
+        for j in range(0, len(lignes), 4):
+            horaire = lignes[j].strip()
+            date = datetime.datetime.strptime(lignes[j + 1].strip(), "%d/%m/%Y")
+            titre = lignes[j + 2].strip()
+            description = lignes[j + 3].strip()
+
+            evenement = (horaire, date, titre, description)
+            evenements.append(evenement)
+
+        return evenements
+
     def afficher_cases(self):
-        cases_frame = tk.Frame(self.fenetre)  #Création d'une nouvelle frame pour les cases
-        cases_frame.grid(row=1, column=0, columnspan=7, sticky="nsew")  #Positionnement de la frame dans la fenêtre
+        cases_frame = tk.Frame(self.fenetre)
+        cases_frame.grid(row=1, column=0, columnspan=7, sticky="nsew")
 
-        jour_selectionne = datetime.datetime.now()
-        date_text = jour_selectionne.strftime("%d/%m/%Y")
-        self.jour_label.configure(text=date_text)
+        jour_selectionne = self.date.strftime("%d/%m/%Y")
+        self.jour_label.configure(text=jour_selectionne)
 
         meteo = Meteo('Dijon,fr')
         categorie, icone, temperature, pression = meteo.obtenir_condition_meteo()
         meteo_text = f"Condition météo : {categorie}\nTempérature : {temperature}°C\nPression : {pression} hPa"
         self.meteo_label.configure(text=meteo_text)
 
-        with open("fichier_evenements.txt", "r") as f:  #récupération des évenements dans le fichier texte
+        with open("fichier_evenements.txt", "r") as f:
             lignes = f.readlines()
 
         for i in range(14):
             case_frame = tk.Frame(cases_frame, bg="white", borderwidth=1, relief="solid")
-            case_frame.pack(fill=tk.X)  #Positionnement de la case pour occuper toute la largeur
+            case_frame.pack(fill=tk.X)
 
             heure_debut = 7 + i
             heure_fin = 8 + i
@@ -491,25 +504,24 @@ class Affichage():
             espace_vide.pack(side=tk.LEFT)
 
             case = tk.Frame(case_frame, bg="white", borderwidth=1, relief="solid")
-            case.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)  #Positionnement de la case avec expansion
-            case.configure(height=2)  #Ajustement de la hauteur de la case à 50 pixels
+            case.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+            case.configure(height=2)
 
             evenement_trouve = False
 
-            for j in range(0, len(lignes), 4):      #
-                horaire = lignes[j].strip()
-                priorite = lignes[j + 1].strip()
-                titre = lignes[j + 2].strip()
-                description = lignes[j + 3].strip()
+            for evenement in self.evenements:
+                horaire, date_evenement, titre, description = evenement
 
-                if 7 <= int(horaire.split(':')[0]) <= 21 and heure_debut == int(horaire.split(':')[0]):
-                    label = tk.Label(case, text=f"{titre}\n{description}\n Prioritée : {priorite}", width=10)
+                heure_evenement = int(horaire.split(':')[0])
+
+                if date_evenement.date().strftime("%d/%m/%Y") == self.date.strftime("%d/%m/%Y") and heure_debut == heure_evenement:
+                    label = tk.Label(case, text=f"{titre}\n{description}", width=10)
                     label.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
                     evenement_trouve = True
                     break
 
             if not evenement_trouve:
-                label = tk.Label(case, text="xxxxxxxxx", width=10)
+                label = tk.Label(case, text="---", width=10)
                 label.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
         self.fenetre.grid_rowconfigure(1, weight=1)
@@ -518,6 +530,9 @@ class Affichage():
 
     def rafraichir_evenements(self):
         self.afficher_cases()
+
+
+
 
 def obtenir_chemin_image(nom_image):       #Fonction permettant d'obtenir les chemins des images téléchargées via Github
     chemin_base = os.path.dirname(os.path.abspath(__file__))
