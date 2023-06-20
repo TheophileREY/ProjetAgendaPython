@@ -1,18 +1,23 @@
 # Agenda Python
 
-Le programme que nous avons créé est un agenda très simple développé dans le cadre d'un projet de programmation de deuxième année a l'ESIREM.
+Le programme que nous avons créé est un agenda développé dans le cadre d'un projet de programmation de deuxième année a l'ESIREM.
+
+## Captures d'écrans
+![Screenshot2.png](Screenshot%2FScreenshot2.png)
+
 
 ## Fonctionnalités
 
-- Agenda permettant d'ajouter des événements sur une interface contenant les heures de 7h à 21h par plages d'une heure.
+- Afficher des événements sur une interface contenant les heures de 7h à 21h (plage d'une heure).
 
-- Modifications et suppressions d'événements sont également disponibles, en plus de la météo de la journée.
+- Ajouter / Modifier / Supprimer des événements.
 
-- Grâce à un calendrier créé par nos soins, on peut accéder à la date souhaitée en cliquant sur le bouton en haut à gauche.
+- Afficher la météo de la journée dans la ville de votre choix (ici Dijon).
 
-- Enfin, il sera également possible de rechercher un jour précis grâce au bouton loupe permettant de rentrer la date souhaitée.
+- On peut accéder à la date souhaitée de plusieurs manières (Selectionner sur un calendrier créé par nos soins / Rechercher une date précise / Passer au jour suivant ou précedent).
 
-### Bibliothèques utilisées
+
+## Bibliothèques utilisées
 
 ```python 
  tkinter
@@ -23,7 +28,7 @@ Le programme que nous avons créé est un agenda très simple développé dans l
 ```
 
 ## Partie du code à modifier
-Ce projet utilise l'API d'[Openweather](https://openweathermap.org/). Vous devez donc disposez d'une clé gratuite en créant un compte et en remplacant cette clé dans le code. Si vous souhaitez juste tester ce projet, des valeurs de simulation ont été mise en place.
+Ce projet utilise l'API d'[Openweather](https://openweathermap.org/). Vous devez donc disposer d'une clé gratuite en créant un compte et en remplacant cette clé dans le code. Si vous souhaitez juste tester ce projet, des valeurs de simulation ont été mise en place.
 
 ```python
 
